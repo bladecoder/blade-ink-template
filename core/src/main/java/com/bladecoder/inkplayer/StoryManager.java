@@ -133,13 +133,13 @@ public class StoryManager implements Serializable {
 		} else
 			story.getVariablesState().set(name, value);
 	}
-
-	public void continueMaximally() {
+	
+	public void next() {
 		String line = null;
 
 		HashMap<String, String> currentLineParams = new HashMap<String, String>();
 
-		while (story.canContinue()) {
+		if (story.canContinue()) {
 			try {
 				line = story.Continue();
 				currentLineParams.clear();
@@ -170,10 +170,13 @@ public class StoryManager implements Serializable {
 				Gdx.app.error( InkApp.LOG_TAG, story.getCurrentErrors().get(0));
 			}
 
+		} else if(hasChoices()) {
+			if(l != null)
+				l.choices(getChoices());
+		} else {
+			if(l != null)
+				l.end();
 		}
-		
-		if(hasChoices() && l != null)
-			l.choices(getChoices());
 	}
 
 	private void processParams(List<String> input, HashMap<String, String> output) {
@@ -220,7 +223,8 @@ public class StoryManager implements Serializable {
 		if ("debug".equals(commandName)) {
 			Gdx.app.debug( InkApp.LOG_TAG, params.get("text"));
 		} else {
-			l.command(commandName, params);
+			if(l != null)
+				l.command(commandName, params);
 		}
 	}
 
@@ -254,7 +258,6 @@ public class StoryManager implements Serializable {
 		}
 
 		story.choosePathString(path);
-		continueMaximally();
 	}
 
 	public boolean hasChoices() {
@@ -307,7 +310,6 @@ public class StoryManager implements Serializable {
 	public void selectChoice(int i) {
 		try {
 			story.chooseChoiceIndex(i);
-			continueMaximally();
 		} catch (Exception e) {
 			Gdx.app.error( InkApp.LOG_TAG, e.getMessage(), e);
 		}

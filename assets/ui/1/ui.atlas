@@ -1,245 +1,126 @@
 
 ui.png
-size: 1031,525
+size: 1158,516
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 back
   rotate: false
-  xy: 692, 12
-  size: 88, 90
+  xy: 981, 1
+  size: 90, 92
   orig: 120, 120
-  offset: 13, 15
-  index: -1
-bonasera_icon
-  rotate: false
-  xy: 1, 354
-  size: 170, 170
-  orig: 170, 170
-  offset: 0, 0
+  offset: 12, 14
   index: -1
 border_rect
   rotate: false
-  xy: 988, 318
+  xy: 1036, 100
   size: 29, 29
   split: 5, 5, 5, 5
   orig: 29, 29
   offset: 0, 0
   index: -1
-bubblepointer
-  rotate: false
-  xy: 1, 13
-  size: 60, 39
-  orig: 60, 39
-  offset: 0, 0
-  index: -1
-bubblepointer2
-  rotate: false
-  xy: 550, 6
-  size: 47, 92
-  orig: 47, 92
-  offset: 0, 0
-  index: -1
 credits
   rotate: false
-  xy: 1, 204
+  xy: 792, 367
   size: 148, 148
   orig: 148, 148
   offset: 0, 0
   index: -1
 debug
   rotate: false
-  xy: 173, 376
+  xy: 792, 217
   size: 148, 148
   orig: 148, 148
   offset: 0, 0
   index: -1
 delete
   rotate: false
-  xy: 821, 112
+  xy: 1036, 131
   size: 112, 112
   orig: 112, 112
   offset: 0, 0
   index: -1
 dialog_down
   rotate: false
-  xy: 301, 1
-  size: 73, 73
+  xy: 1073, 54
+  size: 75, 75
   orig: 93, 93
-  offset: 10, 9
+  offset: 9, 8
   index: -1
 dialog_up
   rotate: false
-  xy: 376, 1
-  size: 73, 73
+  xy: 1064, 290
+  size: 75, 75
   orig: 93, 93
-  offset: 10, 11
+  offset: 9, 10
   index: -1
 facebook
   rotate: false
-  xy: 577, 104
+  xy: 792, 95
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: -1
 help
   rotate: false
-  xy: 1, 54
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-hotspot
-  rotate: false
-  xy: 451, 1
-  size: 97, 97
-  orig: 97, 97
-  offset: 0, 0
-  index: -1
-hotspotpointer
-  rotate: false
-  xy: 323, 376
+  xy: 942, 367
   size: 148, 148
   orig: 148, 148
   offset: 0, 0
   index: -1
 instagram
   rotate: false
-  xy: 699, 104
+  xy: 942, 245
   size: 120, 120
   orig: 120, 120
   offset: 0, 0
   index: -1
-inv_down
-  rotate: false
-  xy: 923, 349
-  size: 105, 175
-  orig: 105, 175
-  offset: 0, 0
-  index: -1
-inv_up
-  rotate: false
-  xy: 151, 177
-  size: 105, 175
-  orig: 105, 175
-  offset: 0, 0
-  index: -1
-inventory
-  rotate: false
-  xy: 858, 237
-  size: 128, 110
-  orig: 129, 129
-  offset: 0, 11
-  index: -1
-lang_en
-  rotate: false
-  xy: 473, 376
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-lang_es
-  rotate: false
-  xy: 623, 376
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-lang_fr
-  rotate: false
-  xy: 773, 376
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-lang_it
-  rotate: false
-  xy: 258, 226
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-lang_ru
-  rotate: false
-  xy: 408, 226
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-lang_uk
-  rotate: false
-  xy: 558, 226
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
 leave
   rotate: false
-  xy: 935, 48
+  xy: 792, 3
   size: 94, 90
   orig: 94, 90
   offset: 0, 0
   index: -1
-lookat
-  rotate: false
-  xy: 708, 226
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
 menu
   rotate: false
-  xy: 782, 19
-  size: 63, 83
+  xy: 1092, 430
+  size: 65, 85
   orig: 123, 123
-  offset: 30, 19
+  offset: 29, 18
   index: -1
-pickup
+paper
   rotate: false
-  xy: 151, 27
-  size: 148, 148
-  orig: 148, 148
+  xy: 1, 7
+  size: 789, 508
+  orig: 789, 508
   offset: 0, 0
   index: -1
 plus
   rotate: false
-  xy: 599, 11
+  xy: 888, 2
   size: 91, 91
   orig: 91, 91
   offset: 0, 0
   index: -1
-pointer
-  rotate: false
-  xy: 935, 140
-  size: 95, 95
-  orig: 95, 95
-  offset: 0, 0
-  index: -1
 rect
   rotate: false
-  xy: 258, 193
+  xy: 1073, 21
   size: 31, 31
   split: 5, 5, 5, 4
   orig: 31, 31
   offset: 0, 0
   index: -1
-talkto
+twitter
   rotate: false
-  xy: 301, 76
-  size: 148, 148
-  orig: 148, 148
-  offset: 0, 0
-  index: -1
-venus
-  rotate: false
-  xy: 451, 100
-  size: 124, 124
-  orig: 124, 124
+  xy: 914, 95
+  size: 120, 120
+  orig: 120, 120
   offset: 0, 0
   index: -1
 white_pixel
   rotate: false
-  xy: 550, 1
+  xy: 1036, 95
   size: 3, 3
   orig: 3, 3
   offset: 0, 0

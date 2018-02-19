@@ -25,7 +25,6 @@ configure(subprojects - project(':android')) {
 }
 
 subprojects {
-  version = '0.0.1-SNAPSHOT'
   ext.appName = 'ink-libgdx-template'
   repositories {
     mavenLocal()

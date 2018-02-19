@@ -24,27 +24,41 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bladecoder.inkplayer.StoryListener;
+import com.bladecoder.inkplayer.StoryManager;
+import com.bladecoder.inkplayer.assets.EngineAssetManager;
 import com.bladecoder.inkplayer.ui.UI.Screens;
 import com.bladecoder.inkplayer.util.DPIUtils;
 
 public class StoryScreen implements AppScreen {
+	private static final float CHOICES_SHOW_TIME = 1.5f;
+	private static final float DEFAULT_WAITING_TIME = 1f;
+	
 	private UI ui;
+	private StoryManager storyManager;
 
 	private Stage stage;
 
 	private Button menuButton;
 	private ChoicesUI choicesUI;
 	private TextPanel textPanel;
+	
+	private Image background;
 	
 	private float tmpMoveByAmountY;
 
@@ -57,6 +71,14 @@ public class StoryScreen implements AppScreen {
 			Line line = new Line(text, params);
 			
 			textPanel.addText(line);
+			
+			Timer.schedule(new Task() {
+
+				@Override
+				public void run() {
+					storyManager.next();
+				}
+			}, calcWaitingTime(text));
 		}
 		 
 		@Override
@@ -74,13 +96,25 @@ public class StoryScreen implements AppScreen {
 
 			choicesUI.setVisible(true);
 			choicesUI.setY(-choicesUI.getHeight());
-			choicesUI.addAction(Actions.moveBy(0, choicesUI.getHeight(), 0.5f, Interpolation.fade));
-			textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, 0.5f, Interpolation.fade));
+			choicesUI.addAction(Actions.moveBy(0, choicesUI.getHeight(), CHOICES_SHOW_TIME, Interpolation.fade));
+			textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
 		}
 
 		@Override
 		public void end() {
-			ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+			String theEnd = "THE END";
+			
+			Line line = new Line(theEnd, new HashMap<String, String>(0));
+			
+			textPanel.addText(line);
+			
+			Timer.schedule(new Task() {
+
+				@Override
+				public void run() {
+					ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+				}
+			}, 5f);
 		}
 	};
 
@@ -155,6 +189,8 @@ public class StoryScreen implements AppScreen {
 		menuButton.setSize(size, size);
 		menuButton.setPosition(stage.getViewport().getScreenWidth() - menuButton.getWidth() - margin,
 				stage.getViewport().getScreenHeight() - menuButton.getHeight() - margin);
+		
+		background.setSize(width, height);
 
 	}
 
@@ -170,11 +206,22 @@ public class StoryScreen implements AppScreen {
 	public Stage getStage() {
 		return stage;
 	}
+	
+	private float calcWaitingTime(String text) {
+		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
+	}
 
-	public void selectChoice(int i) {
-		//textPanel.addAction(Actions.moveBy(0, -tmpMoveByAmountY, 0.5f, Interpolation.fade));
-		textPanel.setY(textPanel.getY()- tmpMoveByAmountY);
-		ui.getStoryManager().selectChoice(i);
+	public void selectChoice(final int i) {
+		textPanel.addAction(Actions.moveBy(0, -tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
+		
+		Timer.schedule(new Task() {
+
+			@Override
+			public void run() {
+				storyManager.selectChoice(i);
+				storyManager.next();
+			}
+		}, CHOICES_SHOW_TIME);
 	}
 
 	@Override
@@ -186,7 +233,9 @@ public class StoryScreen implements AppScreen {
 		
 		
 		textPanel.show();
-		ui.getStoryManager().continueMaximally();
+		
+		if(!storyManager.hasChoices())
+			storyManager.next();
 	}
 
 	@Override
@@ -205,6 +254,10 @@ public class StoryScreen implements AppScreen {
 	@Override
 	public void setUI(final UI ui) {
 		this.ui = ui;
+		StoryScreenStyle style = ui.getSkin().get(StoryScreenStyle.class);
+		storyManager = ui.getStoryManager();
+		
+		stage = new Stage(viewport);
 
 		//recorder = ui.getRecorder();
 		//testerBot = ui.getTesterBot();
@@ -212,6 +265,14 @@ public class StoryScreen implements AppScreen {
 		menuButton = new Button(ui.getSkin(), "menu");
 		choicesUI = new ChoicesUI(this);
 		textPanel = new TextPanel(ui);
+		
+		if(style.bgFile != null) {
+			Texture tex = new Texture(EngineAssetManager.getInstance().getResAsset(style.bgFile));
+			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+			
+			background = new Image(tex);
+			stage.addActor(background);
+		}
 
 		menuButton.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -219,11 +280,26 @@ public class StoryScreen implements AppScreen {
 			}
 		});
 
-		stage = new Stage(viewport);
 		stage.addActor(choicesUI);
 		stage.addActor(menuButton);
 		stage.addActor(textPanel);
 		
-		ui.getStoryManager().setStoryListener(storyListener);
+		storyManager.setStoryListener(storyListener);
+	}
+	
+	/** The style for the MenuScreen */
+	public static class StoryScreenStyle {
+		/** Optional. */
+		public Drawable background;
+		/** if 'background' is not specified try to load the bgFile */
+		public String bgFile;
+
+		public StoryScreenStyle() {
+		}
+
+		public StoryScreenStyle(StoryScreenStyle style) {
+			background = style.background;
+			bgFile = style.bgFile;
+		}
 	}
 }

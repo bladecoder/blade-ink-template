@@ -90,10 +90,10 @@ public class TextPanel extends ScrollPane implements Serializable {
 			l.setColor(Color.valueOf(line.params.get(COLOR_PARAM)));
 
 		if (line.params.get(STYLE_PARAM) == null) {
-			l.setAlignment(Align.center);
+			l.setAlignment(Align.left);
 		}
 
-		int align = Align.center;
+		int align = Align.left;
 
 		if (line.params.get(STYLE_PARAM) != null) {
 			if (line.params.get(STYLE_PARAM).equals(firstStyle))
@@ -102,8 +102,9 @@ public class TextPanel extends ScrollPane implements Serializable {
 				align = Align.right;
 		}
 
-		float maxLabelSize = getWidth() * .7f;
-		Cell<Label> cell = tl.add(l).pad(DPIUtils.getSpacing());
+		float margin = DPIUtils.getSpacing() * 4;
+		float maxLabelSize = getWidth() - margin * 2;
+		Cell<Label> cell = tl.add(l).pad(DPIUtils.getSpacing(), margin, DPIUtils.getSpacing(), margin);
 
 		panel.add(tl).align(align);
 

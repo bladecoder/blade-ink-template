@@ -3,8 +3,8 @@
 BitmapFont: {
 	default: {file: fonts/Roboto-Regular.ttf, size: 17},
 	debug: {file: fonts/Roboto-Regular.ttf, size: 14},
-	big-font: {file: fonts/PaytoneOne.ttf, size: 35},
-	message-font: {file: fonts/PaytoneOne.ttf, size: 18},
+	big-font: {file: fonts/Roboto-Black.ttf, size: 30},
+	message-font: {file: fonts/Roboto-Black.ttf, size: 18},
 	choices-font: {file: fonts/Remington-Noiseless.ttf, size: 22},
 	credits-title: {file: fonts/Ubuntu-M.ttf, size: 20},
 	credits: {file: fonts/Ubuntu-M.ttf, size: 30},
@@ -16,7 +16,7 @@ Color: {
 	white: { a: 1, b: 1, g: 1, r: 1 },
 	black: { a: 1, b: 0, g: 0, r: 0 },
 	dark-grey: { a: 1, b: 0.25, g: 0.25, r: 0.25 },
-	light-grey: { a: 1, b: 0.75, g: 0.75, r: 0.75 },
+	light-grey: { a: 1, b: 0.85, g: 0.85, r: 0.85 },
 	grey: { a: 1, b: 0.5, g: 0.5, r: 0.5 },
 	text-dark: { a: 1, b: 1, g: 1, r: 1 },
 	black-trans:  { r: 0.6, g: 0.6, b: 0.6, a: 1 },
@@ -28,23 +28,16 @@ Color: {
 
 TintedDrawable: {
 	black: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 1.0 } },
-	black08: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.8 } },
+	black08: { name: white_pixel, color: { r: 0, g: 0, b: 0, a: 0.5 } },
 	white: { name: white_pixel, color: white },
 	grey: { name: white_pixel, color: grey},
 	dark-grey: { name: white_pixel, color: dark-grey},
-    dark-green: { name: white_pixel, color: { r: 0.27, g: 0.52, b: 0.49, a: 1 }},
+    light-grey: { name: white_pixel, color: light-grey},
 
 	menu-up: { name: menu, color: white-trans2},
 
 	border-rect-over: { name: border_rect, color: white-trans},
 	border-rect-down: { name: border_rect, color: black},
-
-	lookat-down: {name:lookat, color: black-trans},
-	lookat-over: {name:lookat, color: white-trans},
-	pickup-down: {name:pickup, color: black-trans},
-	pickup-over: {name:pickup, color: white-trans},
-	talkto-down: {name:talkto, color: black-trans},
-	talkto-over: {name:talkto, color: white-trans},
 
 	help-down: {name:help, color: black},
 	help-over: {name:help, color: white-trans},
@@ -65,13 +58,8 @@ TintedDrawable: {
 },
 
 ButtonStyle: {
-	inventory: {up:inventory},
 	delete_game: {up:delete, over: delete-over},
 	menu: {up:menu-up, over: menu, down: menu},
-
-	pie_lookat: {up: lookat, down: lookat-down, over: lookat-over},
-	pie_pickup: {up: pickup, down: pickup-down, over: pickup-over},
-	pie_talkto: {up: talkto, down: talkto-down, over: talkto-over},
 
 	help: {up:help, down: help-down, over: help-over},
 	credits: {up:credits, down: credits-down, over: credits-over},
@@ -211,9 +199,14 @@ SelectBoxStyle: {
 WindowStyle: {
 	default: { titleFont: big-font, background: black08, titleFontColor: white },
 },
-com.bladecoder.inkplayer.ui.TextPanel$TextPanelStyle: {
+
+TextPanelStyle: {
 	default: { 
-		background: dark-green, labelStyle:  {font: story-font, fontColor: {r:0.6, g:0.6, b:0.6, a:1}}
+		background: light-grey, labelStyle:  {font: story-font, fontColor: {r:0.3, g:0.35, b:0.3, a:1}}
 	},
 }
+
+StoryScreenStyle: {
+	default: {bgFile: ui/background.png}
+},
 }

@@ -147,7 +147,10 @@ public class UI {
 		BladeSkin.addStyleTag(CreditsScreen.CreditScreenStyle.class);
 		BladeSkin.addStyleTag(LoadSaveScreen.LoadSaveScreenStyle.class);
 		BladeSkin.addStyleTag(MenuScreen.MenuScreenStyle.class);
-
+		
+		BladeSkin.addStyleTag(StoryScreen.StoryScreenStyle.class);
+		BladeSkin.addStyleTag(TextPanel.TextPanelStyle.class);
+		
 		loadI18NBundle();
 
 		FileHandle skinFile = EngineAssetManager.getInstance().getAsset(SKIN_FILENAME);

@@ -170,7 +170,6 @@ public class ChoicesUI extends ScrollPane {
 		down.remove();
 		setVisible(false);
 		sc.selectChoice(i);
-		
 	}
 
 	/** The style for the DialogUI */
