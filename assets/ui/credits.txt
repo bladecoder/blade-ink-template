@@ -1,0 +1,13 @@
+t#CREATED BY
+RAFAEL GARCÍA
+
+t#STORY
+INKLE STUDIOS
+
+t#SPECIAL THANKS TO INK CREATORS
+INKLE STUDIOS
+
+s#120
+i#libgdx_logo.png
+s#250
+i#blade_logo.png

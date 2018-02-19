@@ -1,0 +1,9 @@
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+eclipse.project.name = appName + '-core'
+
+dependencies {
+  compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+  compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+  compile "com.bladecoder.ink:blade-ink:$bladeInkVersion"
+}
+        
