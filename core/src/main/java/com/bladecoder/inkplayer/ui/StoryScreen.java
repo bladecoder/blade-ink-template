@@ -92,11 +92,17 @@ public class StoryScreen implements AppScreen {
 			choicesUI.clearActions();
 
 			tmpMoveByAmountY = choicesUI.getHeight() - textPanel.getY() + DPIUtils.getMarginSize();
-
+			
+			if(tmpMoveByAmountY < 0) {
+				tmpMoveByAmountY = 0;
+			} else {
+				textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
+			}
+			
 			choicesUI.setVisible(true);
 			choicesUI.setY(-choicesUI.getHeight());
 			choicesUI.addAction(Actions.moveBy(0, choicesUI.getHeight(), CHOICES_SHOW_TIME, Interpolation.fade));
-			textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
+			
 		}
 
 		@Override

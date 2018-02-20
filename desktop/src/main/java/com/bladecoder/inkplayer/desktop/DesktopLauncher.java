@@ -36,16 +36,16 @@ public class DesktopLauncher extends InkApp {
 			System.out.println("Could not load properties file.");
 		}
 
-		cfg.title = p.getProperty(Config.TITLE_PROP, "Ink Player") + " "
+		cfg.title = p.getProperty(Config.TITLE_PROP, "Blade Ink Template") + " "
 				+ p.getProperty(Config.VERSION_PROP, "");
-		// cfg.useGL30 = true;
 
 		cfg.width = 1920 / 2;
 		cfg.height = 1080 / 2;
 
 		cfg.resizable = true;
-		// cfg.samples = 2;
 		cfg.vSyncEnabled = true;
+		
+		fullscreen = Boolean.parseBoolean(p.getProperty("fullscreen", "false"));
 	}
 
 	public void run() {
@@ -139,30 +139,11 @@ public class DesktopLauncher extends InkApp {
 	}
 
 	@Override
-	public void create() {
-		// Gdx.input.setCursorCatched(false);
-		
+	public void create() {	
 		if (fullscreen)
 			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 
-		//hideCursor();
-
 		super.create();
-	}
-
-	private void hideCursor() {
-		Cursor emptyCursor;
-
-		int min = org.lwjgl.input.Cursor.getMinCursorSize();
-		IntBuffer tmp = BufferUtils.createIntBuffer(min * min);
-		try {
-			emptyCursor = new org.lwjgl.input.Cursor(min, min, min / 2, min / 2, 1, tmp, null);
-
-			Mouse.setNativeCursor(emptyCursor);
-		} catch (LWJGLException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	public static void main(String[] args) {

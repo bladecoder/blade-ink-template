@@ -17,10 +17,12 @@ package com.bladecoder.inkplayer.ui;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Event;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -167,7 +169,7 @@ public class ChoicesUI extends ScrollPane {
 
 	}
 
-	private void select(int i) {
+	private void select(final int i) {
 		// RECORD
 		/*
 		 * if (recorder.isRecording()) { recorder.add(i); }
@@ -175,8 +177,17 @@ public class ChoicesUI extends ScrollPane {
 
 		up.remove();
 		down.remove();
-		setVisible(false);
-		sc.selectChoice(i);
+		
+		addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(new Runnable() {
+			
+			@Override
+			public void run() {
+				setVisible(false);
+				setColor(Color.WHITE);
+				sc.selectChoice(i);
+			}
+		})));
+
 	}
 
 	/** The style for the DialogUI */

@@ -68,10 +68,15 @@ public class TextPanel extends ScrollPane implements Serializable {
 	}
 	
 	public void resize(int width, int height) {
-		setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f),
-				height * 0.9f);
+		if(height > width)
+			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.9f : 0.7f),
+					height * 0.75f); // portrait
+		else
+			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f),
+				height * 0.9f); // landscape
+		
 		setPosition((width - getWidth()) / 2,
-				(height - getHeight()) / 2);
+				height - getHeight());
 		
 		panel.clearChildren();
 		for(Line l: history)

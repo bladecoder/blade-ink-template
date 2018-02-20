@@ -19,6 +19,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -176,9 +177,17 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			titleTexFile.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 			Image img = new Image(titleTexFile);
+			
+			float w = (float)titleTexFile.getWidth() / scale;
+			float h = (float)titleTexFile.getHeight() / scale;
+			
+			if(w > stage.getViewport().getScreenWidth() - DPIUtils.getMarginSize() * 4) {
+				w = stage.getViewport().getScreenWidth() - DPIUtils.getMarginSize() * 4;
+				h = w *  (float)titleTexFile.getHeight() / (float)titleTexFile.getWidth();
+			}
+			
+			menuButtonTable.add(img).width(w).height(h).padBottom(DPIUtils.getMarginSize() * 2);
 
-			menuButtonTable.add(img).width((float) titleTexFile.getWidth() / scale)
-					.height((float) titleTexFile.getHeight() / scale).padBottom(DPIUtils.getMarginSize() * 2);
 			menuButtonTable.row();
 		}
 
@@ -264,8 +273,11 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			}
 		});
 
-		menuButtonTable.add(quit);
-		menuButtonTable.row();
+		// Exit button on only on desktop
+		if (Gdx.app.getType() == ApplicationType.Desktop) {
+			menuButtonTable.add(quit);
+			menuButtonTable.row();
+		}
 
 		menuButtonTable.pack();
 

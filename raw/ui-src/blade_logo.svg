@@ -15,9 +15,9 @@
    version="1.1"
    inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="blade_logo.svg"
-   inkscape:export-filename="/home/rgarcia/git/ink-libgdx-template/assets/ui/1/blade_logo.png"
-   inkscape:export-xdpi="50"
-   inkscape:export-ydpi="50">
+   inkscape:export-filename="/home/rgarcia/git/blade-ink-template/assets/ui/1/blade_logo.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
   <sodipodi:namedview
      id="base"
      pagecolor="#000000"
@@ -26,7 +26,7 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.27945399"
-     inkscape:cx="345.55474"
+     inkscape:cx="-137.53015"
      inkscape:cy="226.53885"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -77,7 +77,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -217,7 +217,8 @@
          sodipodi:ry="3.125"
          sodipodi:rx="3.75"
          sodipodi:cy="123.125"
-         sodipodi:cx="241.875" />
+         sodipodi:cx="241.875"
+         d="m 245.625,123.125 a 3.75,3.125 0 0 1 -3.75,3.125 3.75,3.125 0 0 1 -3.75,-3.125 3.75,3.125 0 0 1 3.75,-3.125 3.75,3.125 0 0 1 3.75,3.125 z" />
       <ellipse
          style="color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.72375;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
          id="path6632-4"
@@ -226,7 +227,8 @@
          sodipodi:ry="3.125"
          sodipodi:rx="3.75"
          sodipodi:cy="123.125"
-         sodipodi:cx="241.875" />
+         sodipodi:cx="241.875"
+         d="m 245.625,123.125 a 3.75,3.125 0 0 1 -3.75,3.125 3.75,3.125 0 0 1 -3.75,-3.125 3.75,3.125 0 0 1 3.75,-3.125 3.75,3.125 0 0 1 3.75,3.125 z" />
     </g>
     <g
        style="display:inline"
