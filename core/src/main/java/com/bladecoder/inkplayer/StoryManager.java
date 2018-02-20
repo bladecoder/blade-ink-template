@@ -328,6 +328,14 @@ public class StoryManager implements Serializable {
 			}
 		}
 	}
+	
+	public void setStoryListener(StoryListener sl) {
+		this.l = sl;
+	}
+
+	public void load() {
+		
+	}
 
 	@Override
 	public void read(Json json, JsonValue jsonData) {
@@ -354,9 +362,5 @@ public class StoryManager implements Serializable {
 	public boolean savedGameExists(String filename) {
 		return EngineAssetManager.getInstance().getUserFile(filename).exists()
 				|| FileUtils.exists(EngineAssetManager.getInstance().getAsset("tests/" + filename));
-	}
-	
-	public void setStoryListener(StoryListener sl) {
-		this.l = sl;
 	}
 }

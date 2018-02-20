@@ -1,17 +1,14 @@
 buildscript {
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    google()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
-
-  dependencies {
-    classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-    classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
-    classpath "com.android.tools.build:gradle:$androidPluginVersion"
-  }
+    repositories {
+        mavenCentral()
+        jcenter()
+        google()
+    }
+    dependencies {
+        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+    	classpath "com.android.tools.build:gradle:$androidPluginVersion"      
+    }
 }
 
 allprojects {
@@ -25,31 +22,34 @@ configure(subprojects - project(':android')) {
 }
 
 subprojects {
-  ext.appName = 'ink-libgdx-template'
-  repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
-  }
+    repositories {
+        mavenCentral()
+	jcenter()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+   }
 }
 
-// Clearing Eclipse project data in root folder:
 tasks.eclipse.doLast {
-  delete '.project'
-  delete '.classpath'
-  delete '.settings/'
+    delete ".project"
+    delete '.classpath'
+    delete '.settings/'
 }
 
 // Run `gradle pack` task to generate skin.atlas file at assets/ui.
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
-task pack << {
-  // Note that if you need multiple atlases, you can duplicate the
-  // TexturePacker.process invocation and change paths to generate
-  // additional atlases with this task.
-  TexturePacker.process(
-    'raw/ui',           // Raw assets path.
-    'assets/ui/1',        // Output directory.
-    'ui'              // Name of the generated atlas (without extension).
-  )
+task pack {
+  
+  doLast {
+
+	  // Note that if you need multiple atlases, you can duplicate the
+	  // TexturePacker.process invocation and change paths to generate
+	  // additional atlases with this task.
+	  TexturePacker.process(
+	    'images-raw/ui',           // Raw assets path.
+	    'assets/ui/1/',        // Output directory.
+	    'ui'              // Name of the generated atlas (without extension).
+	  )
+  }
 }
+

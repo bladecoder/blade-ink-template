@@ -16,6 +16,7 @@
 package com.bladecoder.inkplayer.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.audio.Music;
@@ -40,14 +41,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
 import com.bladecoder.inkplayer.ui.UI.Screens;
 import com.bladecoder.inkplayer.util.Config;
 import com.bladecoder.inkplayer.util.DPIUtils;
 
 public class MenuScreen extends ScreenAdapter implements AppScreen {
-//	private final static float BUTTON_PADDING = DPIUtils.UI_SPACE;
+	// private final static float BUTTON_PADDING = DPIUtils.UI_SPACE;
 
 	private UI ui;
 
@@ -97,7 +97,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 				bgTexFile.dispose();
 				bgTexFile = null;
 			}
-			
+
 			if (titleTexFile != null) {
 				titleTexFile.dispose();
 				titleTexFile = null;
@@ -123,7 +123,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 
 		// Image background = new Image(style.background);
 		Drawable bg = style.background;
-		
+
 		float scale = 1;
 
 		if (bg == null && style.bgFile != null) {
@@ -145,13 +145,9 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		menuButtonTable.addListener(new InputListener() {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
-				/* FIXME
 				if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
-
-					if (world.getCurrentScene() != null)
+					if (ui.getStoryManager().getStory() != null)
 						ui.setCurrentScreen(Screens.SCENE_SCREEN);
-						
-						*/
 
 				return true;
 			}
@@ -160,7 +156,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		menuButtonTable.align(getAlign());
 		menuButtonTable.pad(DPIUtils.getMarginSize() * 2);
 		menuButtonTable.defaults().pad(DPIUtils.getSpacing()).width(buttonWidth).align(getAlign());
-//		menuButtonTable.debug();
+		// menuButtonTable.debug();
 
 		stage.setKeyboardFocus(menuButtonTable);
 
@@ -174,27 +170,27 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			menuButtonTable.add(title).padBottom(DPIUtils.getMarginSize() * 2);
 			menuButtonTable.row();
 		}
-		
-		if(style.titleFile != null) {
+
+		if (style.titleFile != null) {
 			titleTexFile = new Texture(EngineAssetManager.getInstance().getResAsset(style.titleFile));
 			titleTexFile.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			
+
 			Image img = new Image(titleTexFile);
-			
-			menuButtonTable.add(img).width((float)titleTexFile.getWidth() / scale).height((float)titleTexFile.getHeight() / scale).padBottom(DPIUtils.getMarginSize() * 2);
+
+			menuButtonTable.add(img).width((float) titleTexFile.getWidth() / scale)
+					.height((float) titleTexFile.getHeight() / scale).padBottom(DPIUtils.getMarginSize() * 2);
 			menuButtonTable.row();
 		}
 
-		/* FIXME
-		if (world.savedGameExists() || world.getCurrentScene() != null) {
+		if (ui.getStoryManager().savedGameExists() || ui.getStoryManager().getStory() != null) {
 			TextButton continueGame = new TextButton(ui.translate("ui.continue"), skin, style.textButtonStyle);
 			continueGame.getLabel().setAlignment(getAlign());
 
 			continueGame.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
-					if (world.getCurrentScene() == null)
+					if (ui.getStoryManager().getStory() == null)
 						try {
-							world.load();
+							ui.getStoryManager().load();
 						} catch (Exception e) {
 							Gdx.app.exit();
 						}
@@ -202,12 +198,10 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					ui.setCurrentScreen(Screens.SCENE_SCREEN);
 				}
 			});
-			
 
 			menuButtonTable.add(continueGame);
 			menuButtonTable.row();
 		}
-		*/
 
 		TextButton newGame = new TextButton(ui.translate("ui.new"), skin, style.textButtonStyle);
 		newGame.getLabel().setAlignment(getAlign());
@@ -217,17 +211,11 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					Dialog d = new Dialog("", skin) {
 						protected void result(Object object) {
 							if (((Boolean) object).booleanValue()) {
-								try {
-									ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
-									ui.setCurrentScreen(Screens.SCENE_SCREEN);
-								} catch (Exception e) {
-									Gdx.app.error( InkApp.LOG_TAG, "IN NEW GAME", e);
-									Gdx.app.exit();
-								}
+								((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).newGame();
+								ui.setCurrentScreen(Screens.SCENE_SCREEN);
 							}
 						}
 					};
-					
 
 					d.pad(DPIUtils.getMarginSize());
 					d.getButtonTable().padTop(DPIUtils.getMarginSize());
@@ -246,13 +234,8 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					d.show(stage);
 				} else {
 
-					try {
-						ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
-						ui.setCurrentScreen(Screens.SCENE_SCREEN);
-					} catch (Exception e) {
-						Gdx.app.error( InkApp.LOG_TAG, "IN NEW GAME", e);
-						Gdx.app.exit();
-					}
+					((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).newGame();
+					ui.setCurrentScreen(Screens.SCENE_SCREEN);
 				}
 			}
 		});
@@ -268,8 +251,10 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			}
 		});
 
-		menuButtonTable.add(loadGame);
-		menuButtonTable.row();
+		/*
+		 * FIXME load/save game menuButtonTable.add(loadGame);
+		 * menuButtonTable.row();
+		 */
 
 		TextButton quit = new TextButton(ui.translate("ui.quit"), skin, style.textButtonStyle);
 		quit.getLabel().setAlignment(getAlign());
@@ -316,14 +301,15 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		iconStackTable.pad(DPIUtils.getMarginSize() * 2);
 
 		/*
-		if (EngineLogger.debugMode() && world.getCurrentScene() != null) {
-			iconStackTable.add(debug);
-			iconStackTable.row();
-		}
-		*/
+		 * FIXME Debug screen if (EngineLogger.debugMode() &&
+		 * world.getCurrentScene() != null) { iconStackTable.add(debug);
+		 * iconStackTable.row(); }
+		 */
 
-		iconStackTable.add(help);
-		iconStackTable.row();
+		/*
+		 * FIXME Help screen iconStackTable.add(help); iconStackTable.row();
+		 */
+
 		iconStackTable.add(credits);
 		iconStackTable.bottom().right();
 		iconStackTable.setFillParent(true);
@@ -346,21 +332,16 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 				time = System.currentTimeMillis();
 
 				if (count == 4) {
-					/* FIXME
-					EngineLogger.toggle();
-
-					if (World.getInstance().isDisposed())
-						return;
-
-					if (EngineLogger.debugMode()) {
-						iconStackTable.row();
-						iconStackTable.add(debug);
-					} else {
-						Cell<?> cell = iconStackTable.getCell(debug);
-						iconStackTable.removeActor(debug);
-						cell.reset();
-					}
-					*/
+					/*
+					 * FIXME EngineLogger.toggle();
+					 * 
+					 * if (World.getInstance().isDisposed()) return;
+					 * 
+					 * if (EngineLogger.debugMode()) { iconStackTable.row();
+					 * iconStackTable.add(debug); } else { Cell<?> cell =
+					 * iconStackTable.getCell(debug);
+					 * iconStackTable.removeActor(debug); cell.reset(); }
+					 */
 				}
 			}
 		});
@@ -399,24 +380,23 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 	protected MenuScreenStyle getStyle() {
 		return ui.getSkin().get(MenuScreenStyle.class);
 	}
-	
+
 	private int getAlign() {
-		if(getStyle().align == null ||
-				"center".equals(getStyle().align))
+		if (getStyle().align == null || "center".equals(getStyle().align))
 			return Align.center;
-		
-		if("top".equals(getStyle().align))
+
+		if ("top".equals(getStyle().align))
 			return Align.top;
-		
-		if("bottom".equals(getStyle().align))
+
+		if ("bottom".equals(getStyle().align))
 			return Align.bottom;
-		
-		if("left".equals(getStyle().align))
+
+		if ("left".equals(getStyle().align))
 			return Align.left;
-		
-		if("right".equals(getStyle().align))
+
+		if ("right".equals(getStyle().align))
 			return Align.right;
-		
+
 		return Align.center;
 	}
 

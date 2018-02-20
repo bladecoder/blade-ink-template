@@ -4,6 +4,18 @@ android {
   buildToolsVersion latestBuildToolsAvailable("27.0.1")
   compileSdkVersion highestSdkAvailable(27)
   
+  defaultConfig {
+        applicationId "com.bladecoder.theintercept"
+        minSdkVersion 16
+        targetSdkVersion 27
+        versionName version
+
+        if(project.hasProperty('versionCode'))
+          versionCode project.versionCode.toInteger()
+        else
+          versionCode 1
+  }
+  
   sourceSets {
     main {
       manifest.srcFile 'AndroidManifest.xml'
@@ -34,11 +46,29 @@ android {
     exclude 'META-INF/dependencies.txt'
   }
   
-  defaultConfig {
-    applicationId 'com.bladecoder.inkplayer'
-    minSdkVersion 8
-    targetSdkVersion 23
-  }
+    if(project.hasProperty('keystore')) {
+          signingConfigs {
+            release {
+              storeFile file(project.keystore)
+              storePassword project.storePassword
+              keyAlias project.alias
+              keyPassword project.keyPassword
+            }
+          }
+
+          buildTypes {
+            release {
+            	  signingConfig signingConfigs.release
+            }
+          }
+    }
+
+    buildTypes {
+          release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+           }
+    }  
 }
 
 configurations { natives }
@@ -104,7 +134,7 @@ task run(type: Exec) {
   }
 
   def adb = path + "/platform-tools/adb"
-  commandLine "$adb", 'shell', 'am', 'start', '-n', 'com.bladecoder.inkplayer/com.bladecoder.inkplayer.android.AndroidLauncher'
+  commandLine "$adb", 'shell', 'am', 'start', '-n', android.defaultConfig.applicationId + '/com.bladecoder.inkplayer.android.AndroidLauncher'
 }
 
 // Sets up the Android Eclipse project using the old Ant based build.
@@ -118,8 +148,8 @@ eclipse {
   }
 
   jdt {
-    sourceCompatibility = 1.6
-    targetCompatibility = 1.6
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
   }
 
   classpath {

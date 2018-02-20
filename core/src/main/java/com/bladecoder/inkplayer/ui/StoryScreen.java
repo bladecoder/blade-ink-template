@@ -23,6 +23,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -35,19 +36,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.StoryListener;
 import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
 import com.bladecoder.inkplayer.ui.UI.Screens;
+import com.bladecoder.inkplayer.util.Config;
 import com.bladecoder.inkplayer.util.DPIUtils;
 
 public class StoryScreen implements AppScreen {
 	private static final float CHOICES_SHOW_TIME = 1.5f;
-	private static final float DEFAULT_WAITING_TIME = 1f;
 	
 	private UI ui;
 	private StoryManager storyManager;
@@ -70,15 +70,14 @@ public class StoryScreen implements AppScreen {
 		public void line(String text, HashMap<String, String> params) {
 			Line line = new Line(text, params);
 			
-			textPanel.addText(line);
-			
-			Timer.schedule(new Task() {
+			textPanel.addText(line, new Runnable() {
 
 				@Override
 				public void run() {
 					storyManager.next();
 				}
-			}, calcWaitingTime(text));
+				
+			});
 		}
 		 
 		@Override
@@ -106,15 +105,20 @@ public class StoryScreen implements AppScreen {
 			
 			Line line = new Line(theEnd, new HashMap<String, String>(0));
 			
-			textPanel.addText(line);
-			
-			Timer.schedule(new Task() {
+			textPanel.addText(line, new Runnable() {
 
 				@Override
 				public void run() {
-					ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+					textPanel.addAction(Actions.sequence(Actions.delay(4), Actions.fadeOut(2), Actions.run(new Runnable() {
+						@Override
+						public void run() {
+							ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+							textPanel.setColor(Color.WHITE);
+						}
+					})));				
 				}
-			}, 5f);
+				
+			});
 		}
 	};
 
@@ -192,6 +196,9 @@ public class StoryScreen implements AppScreen {
 		
 		background.setSize(width, height);
 
+		choicesUI.resize(width, height);
+		textPanel.resize(width, height);
+		textPanel.setY(textPanel.getY() + tmpMoveByAmountY);
 	}
 
 	public void dispose() {
@@ -206,22 +213,36 @@ public class StoryScreen implements AppScreen {
 	public Stage getStage() {
 		return stage;
 	}
-	
-	private float calcWaitingTime(String text) {
-		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
-	}
 
 	public void selectChoice(final int i) {
-		textPanel.addAction(Actions.moveBy(0, -tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
-		
-		Timer.schedule(new Task() {
-
-			@Override
-			public void run() {
-				storyManager.selectChoice(i);
-				storyManager.next();
-			}
-		}, CHOICES_SHOW_TIME);
+		textPanel.addAction(Actions.sequence(Actions.moveBy(0, -tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade), 
+				Actions.run(new Runnable() {
+					
+					@Override
+					public void run() {
+						storyManager.selectChoice(i);
+						storyManager.next();
+						tmpMoveByAmountY = 0;
+					}
+				})));
+	}
+	
+	
+	public void newGame() {
+		try {
+			resetUI();
+			storyManager.newStory(Config.getProperty(Config.STORY, "story.ink.json"));
+			storyManager.next();
+		} catch (Exception e) {
+			Gdx.app.error( InkApp.LOG_TAG, "IN NEW GAME", e);
+			Gdx.app.exit();
+		}
+	}
+	
+	private void resetUI() {
+		choicesUI.setVisible(false);
+		textPanel.clearPanel();
+		tmpMoveByAmountY = 0;
 	}
 
 	@Override
@@ -230,12 +251,9 @@ public class StoryScreen implements AppScreen {
 		multiplexer.addProcessor( stage );
 		multiplexer.addProcessor( inputProcessor ); 
 		Gdx.input.setInputProcessor( multiplexer );
-		
+		stage.setScrollFocus(textPanel);
 		
 		textPanel.show();
-		
-		if(!storyManager.hasChoices())
-			storyManager.next();
 	}
 
 	@Override
@@ -280,9 +298,9 @@ public class StoryScreen implements AppScreen {
 			}
 		});
 
+		stage.addActor(textPanel);
 		stage.addActor(choicesUI);
 		stage.addActor(menuButton);
-		stage.addActor(textPanel);
 		
 		storyManager.setStoryListener(storyListener);
 	}

@@ -25,14 +25,14 @@ import com.bladecoder.inkplayer.util.DPIUtils;
  * @author rgarcia
  */
 public class TextPanel extends ScrollPane implements Serializable {
+	private static final float DEFAULT_WAITING_TIME = 1f;
+	
 	private final String STYLE_PARAM = "style";
 	private final String COLOR_PARAM = "color";
 	
 	private TextPanelStyle style;
 	private ObjectMap<String, LabelStyle> labelStyles;
 	private Table panel;
-
-	private String firstStyle;
 
 	// save all texts in this list
 	private final List<Line> history = new ArrayList<Line>();
@@ -62,12 +62,21 @@ public class TextPanel extends ScrollPane implements Serializable {
 	public void show() {
 		setVisible(true);
 		
-		setSize(getStage().getViewport().getScreenWidth() * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f),
-				getStage().getViewport().getScreenHeight() * 0.9f);
-		setPosition((getStage().getViewport().getScreenWidth() - getWidth()) / 2,
-				(getStage().getViewport().getScreenHeight() - getHeight()) / 2);
+		resize(getStage().getViewport().getScreenWidth(), getStage().getViewport().getScreenHeight());
 
 		addAction(Actions.sequence(Actions.alpha(0), Actions.alpha(1, 0.7f)));
+	}
+	
+	public void resize(int width, int height) {
+		setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f),
+				height * 0.9f);
+		setPosition((width - getWidth()) / 2,
+				(height - getHeight()) / 2);
+		
+		panel.clearChildren();
+		for(Line l: history)
+			addLine(l);
+		setScrollPercentY(1);
 	}
 
 	public void hide() {
@@ -78,12 +87,22 @@ public class TextPanel extends ScrollPane implements Serializable {
 		return style.background;
 	}
 
-	public void addText(Line line) {
-		if (firstStyle == null && line.params.get(STYLE_PARAM) != null)
-			firstStyle = line.params.get(STYLE_PARAM);
-
+	public void addText(Line line, Runnable runWhenEnds) {
+		
+		addLine(line);
+		history.add(line);
+		setScrollPercentY(1);
+		
+		if(runWhenEnds != null)
+			addAction(Actions.sequence(Actions.delay(calcWaitingTime(line.text)), Actions.run(runWhenEnds)));
+	}
+	
+	private void addLine(Line line) {
+		float margin = DPIUtils.getSpacing() * 4;
+		
 		Label l = new Label(line.text, line.params.get(STYLE_PARAM) == null ? style.labelStyle : labelStyles.get(line.params.get(STYLE_PARAM)));
 		Table tl = new Table();
+		tl.defaults().pad(DPIUtils.getSpacing(), margin, DPIUtils.getSpacing(), margin);
 		tl.setBackground(l.getStyle().background);
 
 		if (line.params.get(COLOR_PARAM) != null)
@@ -95,16 +114,8 @@ public class TextPanel extends ScrollPane implements Serializable {
 
 		int align = Align.left;
 
-		if (line.params.get(STYLE_PARAM) != null) {
-			if (line.params.get(STYLE_PARAM).equals(firstStyle))
-				align = Align.left;
-			else
-				align = Align.right;
-		}
-
-		float margin = DPIUtils.getSpacing() * 4;
 		float maxLabelSize = getWidth() - margin * 2;
-		Cell<Label> cell = tl.add(l).pad(DPIUtils.getSpacing(), margin, DPIUtils.getSpacing(), margin);
+		Cell<Label> cell = tl.add(l);
 
 		panel.add(tl).align(align);
 
@@ -117,8 +128,10 @@ public class TextPanel extends ScrollPane implements Serializable {
 		panel.pack();
 		panel.layout();
 		layout();
-
-		setScrollPercentY(1);
+	}
+	
+	private float calcWaitingTime(String text) {
+		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
 	}
 
 	public List<Line> getTexts() {
@@ -132,14 +145,13 @@ public class TextPanel extends ScrollPane implements Serializable {
 
 	public void loadTexts(List<Line> l) {
 		for (Line t : l)
-			addText(t);
+			addText(t, null);
 
 		history.addAll(l);
 	}
 
 	@Override
 	public void write(Json json) {
-		json.writeValue("visible", getParent() != null);
 		json.writeValue("texts", getTexts(), ArrayList.class, Line.class);
 	}
 
@@ -150,20 +162,6 @@ public class TextPanel extends ScrollPane implements Serializable {
 		List<Line> texts = json.readValue("texts", ArrayList.class, Line.class, jsonData);
 
 		if (texts != null) {
-
-			boolean visible = json.readValue("visible", Boolean.class, jsonData);
-			boolean active = json.readValue("active", Boolean.class, jsonData);
-
-			if (visible) {
-				show();
-				clearActions();
-				setColor(Color.WHITE);
-			}
-
-			if (!active) {
-
-			}
-
 			loadTexts(texts);
 		}
 	}

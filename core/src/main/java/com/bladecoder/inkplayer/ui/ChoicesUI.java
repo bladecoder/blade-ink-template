@@ -37,7 +37,7 @@ public class ChoicesUI extends ScrollPane {
 
 	private ChoicesUIStyle style;
 
-	//private Recorder recorder;
+	// private Recorder recorder;
 
 	private Table panel;
 
@@ -45,7 +45,7 @@ public class ChoicesUI extends ScrollPane {
 	private Button down;
 
 	private StoryScreen sc;
-	
+
 	public ChoicesUI(StoryScreen sc) {
 		super(new Table(sc.getUI().getSkin()), sc.getUI().getSkin());
 
@@ -59,7 +59,7 @@ public class ChoicesUI extends ScrollPane {
 
 		panel = (Table) getActor();
 		style = ui.getSkin().get(ChoicesUIStyle.class);
-		//this.recorder = ui.getRecorder();
+		// this.recorder = ui.getRecorder();
 
 		if (style.background != null)
 			panel.setBackground(style.background);
@@ -114,7 +114,7 @@ public class ChoicesUI extends ScrollPane {
 		if (choices.size() == 0)
 			return;
 
-		else if (style.autoselect && choices.size() == 1) { 
+		else if (style.autoselect && choices.size() == 1) {
 			// If only has one option, autoselect it
 			select(0);
 			return;
@@ -142,30 +142,37 @@ public class ChoicesUI extends ScrollPane {
 		}
 
 		panel.pack();
-		setWidth(getStage().getViewport().getScreenWidth());
-		setHeight(Math.min(panel.getHeight(), getStage().getViewport().getScreenHeight() / 2));
+
+		getStage().addActor(up);
+		up.setVisible(false);
+
+		getStage().addActor(down);
+		down.setVisible(false);
+
+		resize(getStage().getViewport().getScreenWidth(), getStage().getViewport().getScreenHeight());
+	}
+
+	public void resize(int width, int height) {
+		setWidth(width);
+		setHeight(Math.min(panel.getHeight(), height / 2));
 
 		float size = DPIUtils.getPrefButtonSize() * .8f;
 		float margin = DPIUtils.getSpacing();
 
-		getStage().addActor(up);
 		up.setSize(size, size);
 		up.setPosition(getX() + getWidth() - size - margin, getY() + getHeight() - margin - size);
-		up.setVisible(false);
 
-		getStage().addActor(down);
 		down.setSize(size, size);
 		down.setPosition(getX() + getWidth() - size - margin, getY() + margin);
-		down.setVisible(false);
+
 	}
 
 	private void select(int i) {
 		// RECORD
 		/*
-		if (recorder.isRecording()) {
-			recorder.add(i);
-		}*/
-		
+		 * if (recorder.isRecording()) { recorder.add(i); }
+		 */
+
 		up.remove();
 		down.remove();
 		setVisible(false);
@@ -178,7 +185,7 @@ public class ChoicesUI extends ScrollPane {
 		public Drawable background;
 
 		public TextButtonStyle textButtonStyle;
-		
+
 		// If only one option is visible, auto select it.
 		public boolean autoselect = true;
 
