@@ -49,7 +49,7 @@ Features:
 
 Releasing your game is very easy with the `release.sh` script.
 
-Unfortunately this is an Unix script and only works on Macos and Linux. Windows users can install a bash shell to execute the script or use the `gradlew.bat` directly to generate the packages. More info about using `gradlew`  [here](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline.)
+Unfortunately this is an Unix script and only works on Macos and Linux. Windows users can install a bash shell to execute the script or use the `gradlew.bat` directly to generate the packages. More info about using `gradlew`  [here](https://github.com/libgdx/libgdx/wiki/Gradle-on-the-Commandline).
 
 The first step is to edit the `release.sh` script and set the next parameters:
 
