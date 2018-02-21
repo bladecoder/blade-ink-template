@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.bladecoder.inkplayer;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 
 import com.badlogic.gdx.Application;
@@ -25,17 +26,17 @@ import com.bladecoder.inkplayer.common.Config;
 import com.bladecoder.inkplayer.ui.UI;
 
 public class InkApp implements ApplicationListener {
-	private static final String TAG="InkApp";
+	private static final String TAG = "InkApp";
 
 	/* Run the specified path at init */
 	private String initPath;
-	
+
 	private String gameState;
 	private String recordName;
 	private String forceRes;
 	private boolean debug = false;
 	private boolean restart = false;
-	
+
 	private StoryManager storyManager;
 	private UI ui;
 
@@ -74,10 +75,10 @@ public class InkApp implements ApplicationListener {
 	@Override
 	public void create() {
 		EngineAssetManager.getInstance().setScale(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		
+
 		storyManager = new StoryManager();
 		ui = new UI(storyManager);
-		
+
 		if (!debug)
 			debug = Config.getProperty(Config.DEBUG_PROP, debug);
 
@@ -95,61 +96,43 @@ public class InkApp implements ApplicationListener {
 
 		if (Gdx.app.getLogLevel() == Application.LOG_DEBUG) {
 			/*
-			if (chapter == null)
-				chapter = Config.getProperty(Config.CHAPTER_PROP, chapter);
-
-			if (testScene == null) {
-				testScene = Config.getProperty(Config.TEST_SCENE_PROP, testScene);
-			}
-
-			if (testScene != null || chapter != null) {
-				try {
-					World.getInstance().loadChapter(chapter, testScene, true);
-				} catch (Exception e) {
-					dispose();
-					Gdx.app.debug.error("EXITING: " + e.getMessage());
-					Gdx.app.exit();
-				}
-
-				ui.setCurrentScreen(UI.Screens.SCENE_SCREEN);
-			}
-
-			if (gameState == null)
-				gameState = Config.getProperty(Config.LOAD_GAMESTATE_PROP, gameState);
-
-			if (gameState != null) {
-				try {
-					World.getInstance().loadGameState(gameState);
-				} catch (IOException e) {
-					Gdx.app.debug.error(e.getMessage());
-				}
-			}
-
-			if (restart) {
-				try {
-					World.getInstance().loadChapter(null);
-					
-					ui.setCurrentScreen(UI.Screens.SCENE_SCREEN);
-				} catch (Exception e) {
-					Gdx.app.debug.error("ERROR LOADING GAME", e);
-					dispose();
-					Gdx.app.exit();
-				}
-			}
-
-			if (recordName == null)
-				recordName = Config.getProperty(Config.PLAY_RECORD_PROP, recordName);
-
-			if (recordName != null) {
-				ui.getRecorder().setFilename(recordName);
-				ui.getRecorder().load();
-				ui.getRecorder().setPlaying(true);
-				
-				ui.setCurrentScreen(UI.Screens.SCENE_SCREEN);
-			}
-			*/
+			 * if (chapter == null) chapter =
+			 * Config.getProperty(Config.CHAPTER_PROP, chapter);
+			 * 
+			 * if (testScene == null) { testScene =
+			 * Config.getProperty(Config.TEST_SCENE_PROP, testScene); }
+			 * 
+			 * if (testScene != null || chapter != null) { try {
+			 * World.getInstance().loadChapter(chapter, testScene, true); }
+			 * catch (Exception e) { dispose(); Gdx.app.debug.error("EXITING: "
+			 * + e.getMessage()); Gdx.app.exit(); }
+			 * 
+			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); }
+			 * 
+			 * if (gameState == null) gameState =
+			 * Config.getProperty(Config.LOAD_GAMESTATE_PROP, gameState);
+			 * 
+			 * if (gameState != null) { try {
+			 * World.getInstance().loadGameState(gameState); } catch
+			 * (IOException e) { Gdx.app.debug.error(e.getMessage()); } }
+			 * 
+			 * if (restart) { try { World.getInstance().loadChapter(null);
+			 * 
+			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); } catch (Exception
+			 * e) { Gdx.app.debug.error("ERROR LOADING GAME", e); dispose();
+			 * Gdx.app.exit(); } }
+			 * 
+			 * if (recordName == null) recordName =
+			 * Config.getProperty(Config.PLAY_RECORD_PROP, recordName);
+			 * 
+			 * if (recordName != null) {
+			 * ui.getRecorder().setFilename(recordName);
+			 * ui.getRecorder().load(); ui.getRecorder().setPlaying(true);
+			 * 
+			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); }
+			 */
 		}
-		
+
 		// Capture back key
 		Gdx.input.setCatchBackKey(true);
 	}
@@ -157,7 +140,6 @@ public class InkApp implements ApplicationListener {
 	@Override
 	public void dispose() {
 		Gdx.app.debug(TAG, "GAME DISPOSE");
-		//World.getInstance().dispose();
 		ui.dispose();
 	}
 
@@ -169,30 +151,21 @@ public class InkApp implements ApplicationListener {
 	@Override
 	public void resize(int width, int height) {
 		Gdx.app.debug(TAG, MessageFormat.format("GAME RESIZE {0}x{1}", width, height));
-		
-		if(ui != null)
+
+		if (ui != null)
 			ui.resize(width, height);
 	}
 
 	@Override
 	public void pause() {
-		/*
-		boolean bot = ui.getTesterBot().isEnabled();
-		boolean r = ui.getRecorder().isPlaying();
+		Gdx.app.debug(TAG, "GAME PAUSE");
+		ui.pause();
 
-		if (!World.getInstance().isDisposed() && 
-				((!bot && !r) || Gdx.app.debug.lastError != null)) {
-			Gdx.app.debug(LOG_TAG, "GAME PAUSE");
-			ui.pause();
-			try {
-				World.getInstance().saveGameState();
-			} catch (IOException e) {
-				Gdx.app.debug.error(e.getMessage());
-			}
-		} else {
-			Gdx.app.debug(LOG_TAG, "NOT PAUSING WHEN BOT IS RUNNING OR PLAYING RECORDED GAME");
+		try {
+			ui.getStoryManager().saveGameState();
+		} catch (IOException e) {
+			Gdx.app.error(TAG, e.getMessage());
 		}
-		*/
 	}
 
 	@Override

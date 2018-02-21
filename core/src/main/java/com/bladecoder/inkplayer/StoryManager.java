@@ -4,16 +4,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.Json.Serializable;
+import com.badlogic.gdx.utils.JsonWriter.OutputType;
 import com.badlogic.gdx.utils.JsonValue;
 import com.bladecoder.ink.runtime.Choice;
 import com.bladecoder.ink.runtime.InkList;
@@ -43,6 +47,9 @@ public class StoryManager implements Serializable {
 	private String storyName;
 
 	private StoryListener l;
+	
+	// save all spit texts
+	private List<Line> record = new ArrayList<Line>();
 
 	public StoryManager() {
 		externalFunctions = new ExternalFunctions();
@@ -67,14 +74,19 @@ public class StoryManager implements Serializable {
 			this.storyName = storyName;
 
 			loadI18NBundle();
+			record.clear();
 		} catch (Exception e) {
 			Gdx.app.error( TAG, "Cannot load Ink Story: " + storyName + " " + e.getMessage());
 		}
 	}
 
-	public void loadI18NBundle() {
+	private void loadI18NBundle() {
 		if (storyName != null && EngineAssetManager.getInstance().getAsset(storyName + "-ink.properties").exists())
 			i18n = I18N.getBundle(storyName + "-ink", true);
+	}
+	
+	public List<Line> getRecod() {
+		return record;
 	}
 
 	public String translateLine(String line) {
@@ -245,8 +257,11 @@ public class StoryManager implements Serializable {
 
 		String tline =  translateLine(line);
 		
-		if(l != null)
-			l.line(tline, params);
+		if(l != null) {
+			Line line2 = new Line(tline, params);
+			record.add(line2);
+			l.line(line2);
+		}
 	}
 
 	public Story getStory() {
@@ -316,6 +331,84 @@ public class StoryManager implements Serializable {
 			Gdx.app.error( TAG, e.getMessage(), e);
 		}
 	}
+	
+	public void setStoryListener(StoryListener sl) {
+		this.l = sl;
+	}
+	
+	public boolean savedGameExists() {
+		return savedGameExists(GAMESTATE_FILENAME);
+	}
+
+	public boolean savedGameExists(String filename) {
+		return EngineAssetManager.getInstance().getUserFile(filename).exists()
+				|| FileUtils.exists(EngineAssetManager.getInstance().getAsset("tests/" + filename));
+	}
+
+	public void loadGameState() throws IOException {
+		long initTime = System.currentTimeMillis();
+		loadGameState(GAMESTATE_FILENAME);
+		Gdx.app.debug(TAG, "GAME STATE LOADING TIME (ms): " + (System.currentTimeMillis() - initTime));
+	}
+
+	public void loadGameState(String filename) throws IOException {
+		FileHandle savedFile = null;
+
+		if (EngineAssetManager.getInstance().getUserFile(filename).exists())
+			savedFile = EngineAssetManager.getInstance().getUserFile(filename);
+		else
+			savedFile = EngineAssetManager.getInstance().getAsset("tests/" + filename);
+
+		loadGameState(savedFile);
+	}
+
+	public void loadGameState(FileHandle savedFile) throws IOException {
+		Gdx.app.debug(TAG, "LOADING GAME STATE");
+
+		if (savedFile.exists()) {
+			JsonValue root = new JsonReader().parse(savedFile.reader("UTF-8"));
+
+			Json json = new Json();
+			json.setIgnoreUnknownFields(true);
+
+			read(json, root);
+		} else {
+			throw new IOException("LOADGAMESTATE: no saved game exists");
+		}
+	}
+
+	public void saveGameState() throws IOException {
+		saveGameState(GAMESTATE_FILENAME);
+	}
+
+	public void removeGameState(String filename) throws IOException {
+		EngineAssetManager.getInstance().getUserFile(filename).delete();
+	}
+
+	public void saveGameState(String filename) throws IOException {
+		Gdx.app.debug(TAG, "SAVING GAME STATE");
+
+		Json json = new Json();
+		json.setOutputType(OutputType.javascript);
+
+		String s = null;
+
+		if (Gdx.app.getLogLevel() == Application.LOG_DEBUG)
+			s = json.prettyPrint(this);
+		else
+			s = json.toJson(this);
+
+		Writer w = EngineAssetManager.getInstance().getUserFile(filename).writer(false, "UTF-8");
+
+		try {
+			w.write(s);
+			w.flush();
+		} catch (IOException e) {
+			throw new IOException("ERROR SAVING GAME", e);
+		} finally {
+			w.close();
+		}
+	}	
 
 	@Override
 	public void write(Json json) {
@@ -323,6 +416,8 @@ public class StoryManager implements Serializable {
 		json.writeValue("storyName", storyName);
 
 		if (story != null) {
+			json.writeValue("texts", record, ArrayList.class, Line.class);
+			
 			try {
 				json.writeValue("story", story.getState().toJson());
 			} catch (Exception e) {
@@ -330,17 +425,11 @@ public class StoryManager implements Serializable {
 			}
 		}
 	}
-	
-	public void setStoryListener(StoryListener sl) {
-		this.l = sl;
-	}
 
-	public void load() {
-		
-	}
-
+	@SuppressWarnings("unchecked")
 	@Override
 	public void read(Json json, JsonValue jsonData) {
+		
 		// READ STORY
 		String storyName = json.readValue("storyName", String.class, jsonData);
 		String storyString = json.readValue("story", String.class, jsonData);
@@ -354,15 +443,8 @@ public class StoryManager implements Serializable {
 			} catch (Exception e) {
 				Gdx.app.error( TAG, e.getMessage(), e);
 			}
+			
+			record = json.readValue("record", ArrayList.class, Line.class, jsonData);
 		}
-	}
-	
-	public boolean savedGameExists() {
-		return savedGameExists(GAMESTATE_FILENAME);
-	}
-
-	public boolean savedGameExists(String filename) {
-		return EngineAssetManager.getInstance().getUserFile(filename).exists()
-				|| FileUtils.exists(EngineAssetManager.getInstance().getAsset("tests/" + filename));
 	}
 }

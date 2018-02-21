@@ -38,6 +38,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.bladecoder.inkplayer.Line;
 import com.bladecoder.inkplayer.StoryListener;
 import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
@@ -68,9 +69,7 @@ public class StoryScreen implements AppScreen {
 	private final StoryListener storyListener = new StoryListener() {
 		
 		@Override
-		public void line(String text, HashMap<String, String> params) {
-			Line line = new Line(text, params);
-			
+		public void line(Line line) {
 			textPanel.addText(line, new Runnable() {
 
 				@Override

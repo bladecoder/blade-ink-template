@@ -1,6 +1,5 @@
 package com.bladecoder.inkplayer.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.Color;
@@ -13,10 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Json;
-import com.badlogic.gdx.utils.Json.Serializable;
-import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.bladecoder.inkplayer.Line;
+import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.common.DPIUtils;
 
 /**
@@ -24,7 +22,7 @@ import com.bladecoder.inkplayer.common.DPIUtils;
  * 
  * @author rgarcia
  */
-public class TextPanel extends ScrollPane implements Serializable {
+public class TextPanel extends ScrollPane {
 	private static final float DEFAULT_WAITING_TIME = 1f;
 	
 	private final String STYLE_PARAM = "style";
@@ -33,14 +31,14 @@ public class TextPanel extends ScrollPane implements Serializable {
 	private TextPanelStyle style;
 	private ObjectMap<String, LabelStyle> labelStyles;
 	private Table panel;
-
-	// save all texts in this list
-	private final List<Line> history = new ArrayList<Line>();
+	
+	private StoryManager sm;
 
 	public TextPanel(UI ui) {
 		super(new Table(ui.getSkin()));
 		
 		Skin skin = ui.getSkin();
+		sm = ui.getStoryManager();
 
 		style = skin.get(TextPanelStyle.class);
 		labelStyles = skin.getAll(LabelStyle.class);
@@ -79,8 +77,11 @@ public class TextPanel extends ScrollPane implements Serializable {
 				height - getHeight());
 		
 		panel.clearChildren();
-		for(Line l: history)
+		
+		// refill panel
+		for(Line l: sm.getRecod())
 			addLine(l);
+		
 		setScrollPercentY(1);
 	}
 
@@ -95,7 +96,6 @@ public class TextPanel extends ScrollPane implements Serializable {
 	public void addText(Line line, Runnable runWhenEnds) {
 		
 		addLine(line);
-		history.add(line);
 		setScrollPercentY(1);
 		
 		if(runWhenEnds != null)
@@ -139,36 +139,14 @@ public class TextPanel extends ScrollPane implements Serializable {
 		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
 	}
 
-	public List<Line> getTexts() {
-		return history;
-	}
 
 	public void clearPanel() {
 		panel.clear();
-		history.clear();
 	}
 
-	public void loadTexts(List<Line> l) {
+	public void addLines(List<Line> l) {
 		for (Line t : l)
 			addText(t, null);
-
-		history.addAll(l);
-	}
-
-	@Override
-	public void write(Json json) {
-		json.writeValue("texts", getTexts(), ArrayList.class, Line.class);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public void read(Json json, JsonValue jsonData) {
-
-		List<Line> texts = json.readValue("texts", ArrayList.class, Line.class, jsonData);
-
-		if (texts != null) {
-			loadTexts(texts);
-		}
 	}
 
 	static public class TextPanelStyle {

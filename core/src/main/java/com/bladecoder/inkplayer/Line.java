@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.bladecoder.inkplayer.ui;
+package com.bladecoder.inkplayer;
 
 import java.util.HashMap;
 

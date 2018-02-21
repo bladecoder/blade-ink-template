@@ -199,7 +199,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 				public void clicked(InputEvent event, float x, float y) {
 					if (ui.getStoryManager().getStory() == null)
 						try {
-							ui.getStoryManager().load();
+							ui.getStoryManager().loadGameState();
 						} catch (Exception e) {
 							Gdx.app.exit();
 						}
