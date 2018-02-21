@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.bladecoder.inkplayer.util;
+package com.bladecoder.inkplayer.common;
 
 import java.util.Properties;
 
 import com.badlogic.gdx.Gdx;
-import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
 
 public class Config {
+	private static final String TAG="ExternalFunctions";
+	
 	public static final String TITLE_PROP="title";
 	public static final String LOAD_GAMESTATE_PROP="load_gamestate";
 	public static final String PLAY_RECORD_PROP="play_recording";
@@ -55,7 +56,7 @@ public class Config {
 		try {
 			config.load(EngineAssetManager.getInstance().getAsset(PROPERTIES_FILENAME).reader());
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, "ERROR LOADING PROPERTIES: " + e.getMessage());
+			Gdx.app.error( TAG, "ERROR LOADING PROPERTIES: " + e.getMessage());
 		}
 	}
 	

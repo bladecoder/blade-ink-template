@@ -1,4 +1,4 @@
-package com.bladecoder.inkplayer.util;
+package com.bladecoder.inkplayer.common;
 
 import com.badlogic.gdx.Gdx;
 

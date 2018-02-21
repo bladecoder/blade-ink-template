@@ -32,7 +32,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
-import com.bladecoder.inkplayer.util.DPIUtils;
+import com.bladecoder.inkplayer.common.DPIUtils;
 
 public class ChoicesUI extends ScrollPane {
 	public static final String DIALOG_END_COMMAND = "dialog_end";

@@ -20,11 +20,13 @@ import com.bladecoder.ink.runtime.InkList;
 import com.bladecoder.ink.runtime.ListDefinition;
 import com.bladecoder.ink.runtime.Story;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.FileUtils;
 import com.bladecoder.inkplayer.i18n.I18N;
-import com.bladecoder.inkplayer.util.FileUtils;
 
 
 public class StoryManager implements Serializable {
+	private static final String TAG="StoryManager";
+	
 	public static final String GAMESTATE_EXT = ".gamestate.v1";
 	private static final String GAMESTATE_FILENAME = "default" + GAMESTATE_EXT;
 	
@@ -60,13 +62,13 @@ public class StoryManager implements Serializable {
 		try {
 			long initTime = System.currentTimeMillis();
 			newStory(asset.read());
-			Gdx.app.debug( InkApp.LOG_TAG, "INK STORY LOADING TIME (ms): " + (System.currentTimeMillis() - initTime));
+			Gdx.app.debug( TAG, "INK STORY LOADING TIME (ms): " + (System.currentTimeMillis() - initTime));
 
 			this.storyName = storyName;
 
 			loadI18NBundle();
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, "Cannot load Ink Story: " + storyName + " " + e.getMessage());
+			Gdx.app.error( TAG, "Cannot load Ink Story: " + storyName + " " + e.getMessage());
 		}
 	}
 
@@ -88,7 +90,7 @@ public class StoryManager implements Serializable {
 				try {
 					translated += i18n.getString(k);
 				} catch (Exception e) {
-					Gdx.app.error( InkApp.LOG_TAG, "MISSING TRANSLATION KEY: " + key);
+					Gdx.app.error( TAG, "MISSING TRANSLATION KEY: " + key);
 					return key;
 				}
 			}
@@ -149,7 +151,7 @@ public class StoryManager implements Serializable {
 					line = line.substring(0, line.length() - 1);
 
 				if (!line.isEmpty()) {
-					Gdx.app.debug( InkApp.LOG_TAG, "INK LINE: " + line);
+					Gdx.app.debug( TAG, "INK LINE: " + line);
 
 					processParams(story.getCurrentTags(), currentLineParams);
 
@@ -160,14 +162,14 @@ public class StoryManager implements Serializable {
 						processTextLine(currentLineParams, line);
 					}
 				} else {
-					Gdx.app.debug( InkApp.LOG_TAG, "INK EMPTY LINE!");
+					Gdx.app.debug( TAG, "INK EMPTY LINE!");
 				}
 			} catch (Exception e) {
-				Gdx.app.error( InkApp.LOG_TAG, e.getMessage(), e);
+				Gdx.app.error( TAG, e.getMessage(), e);
 			}
 
 			if (story.getCurrentErrors() != null && !story.getCurrentErrors().isEmpty()) {
-				Gdx.app.error( InkApp.LOG_TAG, story.getCurrentErrors().get(0));
+				Gdx.app.error( TAG, story.getCurrentErrors().get(0));
 			}
 
 		} else if(hasChoices()) {
@@ -199,7 +201,7 @@ public class StoryManager implements Serializable {
 				value = null;
 			}
 
-			Gdx.app.debug( InkApp.LOG_TAG, "PARAM: " + key + " value: " + value);
+			Gdx.app.debug( TAG, "PARAM: " + key + " value: " + value);
 
 			output.put(key, value);
 		}
@@ -221,7 +223,7 @@ public class StoryManager implements Serializable {
 		}
 
 		if ("debug".equals(commandName)) {
-			Gdx.app.debug( InkApp.LOG_TAG, params.get("text"));
+			Gdx.app.debug( TAG, params.get("text"));
 		} else {
 			if(l != null)
 				l.command(commandName, params);
@@ -253,7 +255,7 @@ public class StoryManager implements Serializable {
 
 	public void run(String path) throws Exception {
 		if (story == null) {
-			Gdx.app.error( InkApp.LOG_TAG, "Ink Story not loaded!");
+			Gdx.app.error( TAG, "Ink Story not loaded!");
 			return;
 		}
 
@@ -311,7 +313,7 @@ public class StoryManager implements Serializable {
 		try {
 			story.chooseChoiceIndex(i);
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, e.getMessage(), e);
+			Gdx.app.error( TAG, e.getMessage(), e);
 		}
 	}
 
@@ -324,7 +326,7 @@ public class StoryManager implements Serializable {
 			try {
 				json.writeValue("story", story.getState().toJson());
 			} catch (Exception e) {
-				Gdx.app.error( InkApp.LOG_TAG, e.getMessage(), e);
+				Gdx.app.error( TAG, e.getMessage(), e);
 			}
 		}
 	}
@@ -348,9 +350,9 @@ public class StoryManager implements Serializable {
 
 				long initTime = System.currentTimeMillis();
 				story.getState().loadJson(storyString);
-				Gdx.app.debug( InkApp.LOG_TAG, "INK SAVED STATE LOADING TIME (ms): " + (System.currentTimeMillis() - initTime));
+				Gdx.app.debug( TAG, "INK SAVED STATE LOADING TIME (ms): " + (System.currentTimeMillis() - initTime));
 			} catch (Exception e) {
-				Gdx.app.error( InkApp.LOG_TAG, e.getMessage(), e);
+				Gdx.app.error( TAG, e.getMessage(), e);
 			}
 		}
 	}

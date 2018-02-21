@@ -15,23 +15,22 @@
  ******************************************************************************/
 package com.bladecoder.inkplayer.ui;
 
-import com.badlogic.gdx.Application.ApplicationType;
-
 import java.util.ResourceBundle;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
-import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.RectangleRenderer;
 import com.bladecoder.inkplayer.i18n.I18N;
-import com.bladecoder.inkplayer.util.RectangleRenderer;
 
 public class UI {
+	private static final String TAG="UI";
 
 	private static final String SKIN_FILENAME = "ui/ui.json";
 
@@ -87,7 +86,7 @@ public class UI {
 		try {
 			return (AppScreen) ClassReflection.newInstance(defaultClass);
 		} catch (Exception e) {
-			Gdx.app.error(InkApp.LOG_TAG, "Error instancing screen", e);
+			Gdx.app.error(TAG, "Error instancing screen", e);
 		}
 
 		return null;
@@ -110,7 +109,7 @@ public class UI {
 	}
 
 	public void setCurrentScreen(Screens s) {
-		Gdx.app.debug(InkApp.LOG_TAG, "Setting SCREEN: " + s.name());
+		Gdx.app.debug(TAG, "Setting SCREEN: " + s.name());
 		setCurrentScreen(screens[s.ordinal()]);
 	}
 
@@ -218,7 +217,7 @@ public class UI {
 		try {
 			translated = i18n.getString(key);
 		} catch (Exception e) {
-			Gdx.app.error(InkApp.LOG_TAG, "MISSING TRANSLATION KEY: " + key);
+			Gdx.app.error(TAG, "MISSING TRANSLATION KEY: " + key);
 		}
 
 		return translated;

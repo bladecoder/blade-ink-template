@@ -43,11 +43,11 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
-import com.bladecoder.inkplayer.InkApp;
-import com.bladecoder.inkplayer.util.Config;
+import com.bladecoder.inkplayer.common.Config;
 
 
 public class EngineAssetManager extends AssetManager {
+	private static final String TAG="EngineAssetManager";
 
 	public static final String DESKTOP_PREFS_DIR = "InkPlayer";
 	public static final String NOT_DESKTOP_PREFS_DIR = "data/";
@@ -88,7 +88,7 @@ public class EngineAssetManager extends AssetManager {
 		Resolution r[] = getResolutions(resResolver.getBaseResolver(), worldWidth, worldHeight);
 
 		if (r == null || r.length == 0) {
-			Gdx.app.error( InkApp.LOG_TAG, "No resolutions defined. Maybe your 'assets' folder doesn't exists or it's empty");
+			Gdx.app.error( TAG, "No resolutions defined. Maybe your 'assets' folder doesn't exists or it's empty");
 			return;
 		}
 
@@ -96,7 +96,7 @@ public class EngineAssetManager extends AssetManager {
 		resResolver.selectResolution();
 		scale = resResolver.getResolution().portraitWidth / (float) worldWidth;
 
-		Gdx.app.debug( InkApp.LOG_TAG, "Setting ASSETS SCALE: " + scale);
+		Gdx.app.debug( TAG, "Setting ASSETS SCALE: " + scale);
 	}
 
 	public static EngineAssetManager getInstance() {
@@ -110,7 +110,7 @@ public class EngineAssetManager extends AssetManager {
 	public void forceResolution(String suffix) {
 		resResolver.setFixedResolution(suffix);
 
-		Gdx.app.debug( InkApp.LOG_TAG, "FORCING ASSETS RESOLUTION SCALE: " + suffix);
+		Gdx.app.debug( TAG, "FORCING ASSETS RESOLUTION SCALE: " + suffix);
 	}
 
 	public Resolution getResolution() {
@@ -167,7 +167,7 @@ public class EngineAssetManager extends AssetManager {
 			try {
 				float scale = Float.parseFloat(name);
 
-				Gdx.app.debug( InkApp.LOG_TAG, "RES FOUND: " + scale);
+				Gdx.app.debug( TAG, "RES FOUND: " + scale);
 
 				Resolution r = new Resolution((int) (worldWidth * scale), (int) (worldHeight * scale), name);
 
@@ -216,7 +216,7 @@ public class EngineAssetManager extends AssetManager {
 				try {
 					f = Gdx.files.absolute(URLDecoder.decode(n, "UTF-8"));
 				} catch (UnsupportedEncodingException e) {
-					Gdx.app.error( InkApp.LOG_TAG, "Error decoding URL", e);
+					Gdx.app.error( TAG, "Error decoding URL", e);
 					return new String[0];
 				}
 
@@ -248,7 +248,7 @@ public class EngineAssetManager extends AssetManager {
 			try {
 				jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"));
 			} catch (Exception e) {
-				Gdx.app.error( InkApp.LOG_TAG, "Locating jar file", e);
+				Gdx.app.error( TAG, "Locating jar file", e);
 				return result.toArray(new String[result.size()]);
 			}
 
@@ -272,7 +272,7 @@ public class EngineAssetManager extends AssetManager {
 			try {
 				jar.close();
 			} catch (IOException e) {
-				Gdx.app.error( InkApp.LOG_TAG, "Closing jar file", e);
+				Gdx.app.error( TAG, "Closing jar file", e);
 				return result.toArray(new String[result.size()]);
 			}
 

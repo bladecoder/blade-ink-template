@@ -8,7 +8,7 @@ import java.nio.IntBuffer;
 import java.util.Properties;
 
 import com.bladecoder.inkplayer.InkApp;
-import com.bladecoder.inkplayer.util.Config;
+import com.bladecoder.inkplayer.common.Config;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.LWJGLException;

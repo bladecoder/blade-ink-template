@@ -23,8 +23,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.RectangleRenderer;
 import com.bladecoder.inkplayer.ui.UI.Screens;
-import com.bladecoder.inkplayer.util.RectangleRenderer;
 
 public class LoadingScreen extends ScreenAdapter implements AppScreen {
 	private final static float INIT_TIME_SEG = 1f;

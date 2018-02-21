@@ -38,15 +38,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.StoryListener;
 import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.Config;
+import com.bladecoder.inkplayer.common.DPIUtils;
 import com.bladecoder.inkplayer.ui.UI.Screens;
-import com.bladecoder.inkplayer.util.Config;
-import com.bladecoder.inkplayer.util.DPIUtils;
 
 public class StoryScreen implements AppScreen {
+	private static final String TAG="StoryScreen";
+	
 	private static final float CHOICES_SHOW_TIME = 1.5f;
 	
 	private UI ui;
@@ -240,7 +241,7 @@ public class StoryScreen implements AppScreen {
 			storyManager.newStory(Config.getProperty(Config.STORY, "story.ink.json"));
 			storyManager.next();
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, "IN NEW GAME", e);
+			Gdx.app.error( TAG, "IN NEW GAME", e);
 			Gdx.app.exit();
 		}
 	}

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.bladecoder.ink.runtime.Story.ExternalFunction;
 
 public class ExternalFunctions {
+	private static final String TAG="ExternalFunctions";
 
 	private StoryManager inkManager;
 
@@ -23,7 +24,7 @@ public class ExternalFunctions {
 					
 					return p;
 				} catch (Exception e) {
-					Gdx.app.error( InkApp.LOG_TAG, "Ink getModelProp: " + e.getMessage(), e);
+					Gdx.app.error( TAG, "Ink getModelProp: " + e.getMessage(), e);
 				}
 
 				return null;

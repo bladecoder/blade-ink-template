@@ -19,9 +19,10 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import com.badlogic.gdx.Gdx;
-import com.bladecoder.inkplayer.InkApp;
 
 public class I18N {
+	private static final String TAG="I18N";
+	
 	public static final char PREFIX = '@';
 	public static final String ENCODING = "UTF-8";
 
@@ -36,7 +37,7 @@ public class I18N {
 			
 			rb = ResourceBundle.getBundle(filename, locale, new I18NControl(ENCODING));
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, "ERROR LOADING BUNDLE: " + filename);
+			Gdx.app.error( TAG, "ERROR LOADING BUNDLE: " + filename);
 		}
 		
 		return rb;

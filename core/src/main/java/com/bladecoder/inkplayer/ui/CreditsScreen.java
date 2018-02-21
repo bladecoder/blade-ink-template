@@ -40,12 +40,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.bladecoder.inkplayer.InkApp;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.DPIUtils;
 import com.bladecoder.inkplayer.ui.UI.Screens;
-import com.bladecoder.inkplayer.util.DPIUtils;
 
 public class CreditsScreen extends ScreenAdapter implements AppScreen {
+	private static final String TAG="CreditsScreen";
+	
 	private static final String CREDITS_FILENAME = "ui/credits";
 	private static final float SPEED = 10 * DPIUtils.getSpacing(); // px/sec.
 
@@ -195,7 +196,7 @@ public class CreditsScreen extends ScreenAdapter implements AppScreen {
 			music.play();
 		} catch(Exception e) {
 			// sometimes the play method fails on desktop.
-			Gdx.app.error( InkApp.LOG_TAG, "Error Playing music: " + s, e);
+			Gdx.app.error( TAG, "Error Playing music: " + s, e);
 		}
 	}
 
@@ -250,7 +251,7 @@ public class CreditsScreen extends ScreenAdapter implements AppScreen {
 				credits.add(line);
 			}
 		} catch (Exception e) {
-			Gdx.app.error( InkApp.LOG_TAG, e.getMessage());
+			Gdx.app.error( TAG, e.getMessage());
 
 			ui.setCurrentScreen(Screens.MENU_SCREEN);
 		}

@@ -40,9 +40,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.SerializationException;
 import com.badlogic.gdx.utils.reflect.ClassReflection;
 import com.badlogic.gdx.utils.reflect.ReflectionException;
-import com.bladecoder.inkplayer.InkApp;
-import com.bladecoder.inkplayer.util.DPIUtils;
-import com.bladecoder.inkplayer.util.FileUtils;
+import com.bladecoder.inkplayer.common.DPIUtils;
+import com.bladecoder.inkplayer.common.FileUtils;
 
 /**
  * Custom Skin class to add TTF font support
@@ -50,6 +49,7 @@ import com.bladecoder.inkplayer.util.FileUtils;
  * @author rgarcia
  */
 public class BladeSkin extends Skin {
+	private static final String TAG="BladeSkin";
 
 	public BladeSkin(FileHandle skinFile) {
 		super(skinFile);
@@ -143,7 +143,7 @@ public class BladeSkin extends Skin {
 
 					font = generator.generateFont(parameter);
 					
-					Gdx.app.debug( InkApp.LOG_TAG, path + " TIME (ms): " + (System.currentTimeMillis() - initTime));
+					Gdx.app.debug( TAG, path + " TIME (ms): " + (System.currentTimeMillis() - initTime));
 					
 					// TODO Dispose all generators.
 

@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Json.Serializable;
 import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ObjectMap;
-import com.bladecoder.inkplayer.util.DPIUtils;
+import com.bladecoder.inkplayer.common.DPIUtils;
 
 /**
  * The TextPanel is a table with a label per row

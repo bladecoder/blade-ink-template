@@ -19,11 +19,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.ResolutionFileResolver.Resolution;
 import com.badlogic.gdx.files.FileHandle;
-import com.bladecoder.inkplayer.InkApp;
-import com.bladecoder.inkplayer.util.FileUtils;
+import com.bladecoder.inkplayer.common.FileUtils;
 
 
 public class EngineResolutionFileResolver implements FileHandleResolver {
+	private static final String TAG="EngineResolutionFileResolver";
 
 	private final FileHandleResolver baseResolver;
 	private Resolution[] descriptors;
@@ -135,7 +135,7 @@ public class EngineResolutionFileResolver implements FileHandleResolver {
 		}
 		
 		if(bestDesc == null) {
-			Gdx.app.error( InkApp.LOG_TAG, "Requested resolution not found: " + fixResolution);
+			Gdx.app.error( TAG, "Requested resolution not found: " + fixResolution);
 			selectBestResolution();
 		}
 	}

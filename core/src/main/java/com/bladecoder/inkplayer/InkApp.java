@@ -21,11 +21,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
+import com.bladecoder.inkplayer.common.Config;
 import com.bladecoder.inkplayer.ui.UI;
-import com.bladecoder.inkplayer.util.Config;
 
 public class InkApp implements ApplicationListener {
-	public static String LOG_TAG="InkApp";
+	private static final String TAG="InkApp";
 
 	/* Run the specified path at init */
 	private String initPath;
@@ -84,7 +84,7 @@ public class InkApp implements ApplicationListener {
 		if (debug)
 			Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-		Gdx.app.debug(LOG_TAG, "GAME CREATE");
+		Gdx.app.debug(TAG, "GAME CREATE");
 
 		if (forceRes == null)
 			forceRes = Config.getProperty(Config.FORCE_RES_PROP, forceRes);
@@ -156,7 +156,7 @@ public class InkApp implements ApplicationListener {
 
 	@Override
 	public void dispose() {
-		Gdx.app.debug(LOG_TAG, "GAME DISPOSE");
+		Gdx.app.debug(TAG, "GAME DISPOSE");
 		//World.getInstance().dispose();
 		ui.dispose();
 	}
@@ -168,7 +168,7 @@ public class InkApp implements ApplicationListener {
 
 	@Override
 	public void resize(int width, int height) {
-		Gdx.app.debug(LOG_TAG, MessageFormat.format("GAME RESIZE {0}x{1}", width, height));
+		Gdx.app.debug(TAG, MessageFormat.format("GAME RESIZE {0}x{1}", width, height));
 		
 		if(ui != null)
 			ui.resize(width, height);
@@ -197,7 +197,7 @@ public class InkApp implements ApplicationListener {
 
 	@Override
 	public void resume() {
-		Gdx.app.debug(LOG_TAG, "GAME RESUME");
+		Gdx.app.debug(TAG, "GAME RESUME");
 		resize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		ui.resume();
 	}
