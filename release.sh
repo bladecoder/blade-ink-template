@@ -1,9 +1,14 @@
 #!/bin/bash
 set -e
 
+# The destination folder for the packaged application
 DIST_DIR=$HOME"/PACKAGES"
+
+# IOS signing
 IOS_SIGN_IDENTITY="iPhone Distribution"
 IOS_PROVISIONING_PROFILE=XXX
+
+# Android signing
 ANDROID_KEYSTORE=$HOME/Dropbox/docs/ids/rgarcia_android.keystore
 ANDROID_KEY_ALIAS=bladecoder
 

@@ -1,6 +1,8 @@
 apply plugin: 'robovm'
 
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+sourceCompatibility = 1.7
+targetCompatibility=1.7
 
 ext {
 	mainClassName = "com.bladecoder.inkplayer.ios.IOSLauncher"
