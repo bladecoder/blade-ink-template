@@ -58,10 +58,8 @@ TintedDrawable: {
 },
 
 ButtonStyle: {
-	delete_game: {up:delete, over: delete-over},
 	menu: {up:menu-up, over: menu, down: menu},
 
-	help: {up:help, down: help-down, over: help-over},
 	credits: {up:credits, down: credits-down, over: credits-over},
 	debug: {up:debug, down: debug-down, over: debug-over},
 
@@ -119,11 +117,6 @@ LabelStyle: {
 
 MenuScreenStyle: {
 	default: {bgFile: ui/background.png, textButtonStyle: menu, showTitle: false, titleFile: ui/title.png, align: center}
-},
-
-
-LoadSaveScreenStyle: {
-	default: { bgFile: ui/background.png, textButtonStyle: menu}
 },
 
 

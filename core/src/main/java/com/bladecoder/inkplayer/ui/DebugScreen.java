@@ -95,7 +95,7 @@ public class DebugScreen implements AppScreen {
 			@Override
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
-					ui.setCurrentScreen(Screens.SCENE_SCREEN);
+					ui.setCurrentScreen(Screens.STORY_SCREEN);
 				return true;
 			}
 		});
@@ -106,7 +106,7 @@ public class DebugScreen implements AppScreen {
 
 		back.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
-				ui.setCurrentScreen(Screens.SCENE_SCREEN);
+				ui.setCurrentScreen(Screens.STORY_SCREEN);
 			}
 		});
 

@@ -46,7 +46,7 @@ public class UI {
 	private static ResourceBundle i18n;
 
 	public enum Screens {
-		INIT_SCREEN, SCENE_SCREEN, LOADING_SCREEN, MENU_SCREEN, HELP_SCREEN, CREDIT_SCREEN, LOAD_GAME_SCREEN, SAVE_GAME_SCREEN
+		INIT_SCREEN, STORY_SCREEN, LOADING_SCREEN, MENU_SCREEN, HELP_SCREEN, CREDIT_SCREEN, LOAD_GAME_SCREEN, SAVE_GAME_SCREEN
 	}
 
 	private final AppScreen screens[];
@@ -63,20 +63,18 @@ public class UI {
 		loadAssets();
 
 		screens[Screens.INIT_SCREEN.ordinal()] = getScreenInstance(Screens.INIT_SCREEN.toString(), InitScreen.class);
-		screens[Screens.SCENE_SCREEN.ordinal()] = getScreenInstance(Screens.SCENE_SCREEN.toString(), StoryScreen.class);
-		screens[Screens.LOADING_SCREEN.ordinal()] = getScreenInstance(Screens.LOADING_SCREEN.toString(),
-				LoadingScreen.class);
+		screens[Screens.STORY_SCREEN.ordinal()] = getScreenInstance(Screens.STORY_SCREEN.toString(), StoryScreen.class);
+		screens[Screens.LOADING_SCREEN.ordinal()] = null;
 		screens[Screens.MENU_SCREEN.ordinal()] = getScreenInstance(Screens.MENU_SCREEN.toString(), MenuScreen.class);
-		screens[Screens.HELP_SCREEN.ordinal()] = getScreenInstance(Screens.HELP_SCREEN.toString(), HelpScreen.class);
+		screens[Screens.HELP_SCREEN.ordinal()] = null;
 		screens[Screens.CREDIT_SCREEN.ordinal()] = getScreenInstance(Screens.CREDIT_SCREEN.toString(),
 				CreditsScreen.class);
-		screens[Screens.LOAD_GAME_SCREEN.ordinal()] = getScreenInstance(Screens.LOAD_GAME_SCREEN.toString(),
-				LoadSaveScreen.class);
-		screens[Screens.SAVE_GAME_SCREEN.ordinal()] = getScreenInstance(Screens.SAVE_GAME_SCREEN.toString(),
-				LoadSaveScreen.class);
+		screens[Screens.LOAD_GAME_SCREEN.ordinal()] = null;
+		screens[Screens.SAVE_GAME_SCREEN.ordinal()] = null;
 
 		for (AppScreen s : screens)
-			s.setUI(this);
+			if(s != null)
+				s.setUI(this);
 
 		setCurrentScreen(Screens.INIT_SCREEN);
 	}
@@ -144,7 +142,6 @@ public class UI {
 	private void loadAssets() {
 		BladeSkin.addStyleTag(ChoicesUI.ChoicesUIStyle.class);
 		BladeSkin.addStyleTag(CreditsScreen.CreditScreenStyle.class);
-		BladeSkin.addStyleTag(LoadSaveScreen.LoadSaveScreenStyle.class);
 		BladeSkin.addStyleTag(MenuScreen.MenuScreenStyle.class);
 		
 		BladeSkin.addStyleTag(StoryScreen.StoryScreenStyle.class);
@@ -182,7 +179,8 @@ public class UI {
 
 		// DISPOSE ALL SCREENS
 		for (AppScreen s : screens)
-			s.dispose();
+			if(s != null)
+				s.dispose();
 
 		EngineAssetManager.getInstance().dispose();
 	}

@@ -48,8 +48,6 @@ import com.bladecoder.inkplayer.common.DPIUtils;
 import com.bladecoder.inkplayer.ui.UI.Screens;
 
 public class MenuScreen extends ScreenAdapter implements AppScreen {
-	// private final static float BUTTON_PADDING = DPIUtils.UI_SPACE;
-
 	private static final String TAG = "MenuScreen";
 
 	private UI ui;
@@ -58,7 +56,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 	private Texture bgTexFile = null;
 	private Texture titleTexFile = null;
 	private Button credits;
-	private Button help;
 	private Button debug;
 
 	private final Table menuButtonTable = new Table();
@@ -84,7 +81,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 
 		float size = DPIUtils.getPrefButtonSize();
 		credits.setSize(size, size);
-		help.setSize(size, size);
 		debug.setSize(size, size);
 	}
 
@@ -150,7 +146,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			public boolean keyUp(InputEvent event, int keycode) {
 				if (keycode == Input.Keys.ESCAPE || keycode == Input.Keys.BACK)
 					if (ui.getStoryManager().getStory() != null)
-						ui.setCurrentScreen(Screens.SCENE_SCREEN);
+						ui.setCurrentScreen(Screens.STORY_SCREEN);
 
 				return true;
 			}
@@ -209,7 +205,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 						}
 					}
 					
-					ui.setCurrentScreen(Screens.SCENE_SCREEN);
+					ui.setCurrentScreen(Screens.STORY_SCREEN);
 				}
 			});
 
@@ -232,7 +228,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 									Gdx.app.exit();
 								}
 								
-								ui.setCurrentScreen(Screens.SCENE_SCREEN);
+								ui.setCurrentScreen(Screens.STORY_SCREEN);
 							}
 						}
 					};
@@ -261,26 +257,13 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 						Gdx.app.exit();
 					}
 					
-					ui.setCurrentScreen(Screens.SCENE_SCREEN);
+					ui.setCurrentScreen(Screens.STORY_SCREEN);
 				}
 			}
 		});
 
 		menuButtonTable.add(newGame);
 		menuButtonTable.row();
-
-		TextButton loadGame = new TextButton(ui.translate("ui.load"), skin, style.textButtonStyle);
-		loadGame.getLabel().setAlignment(getAlign());
-		loadGame.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				ui.setCurrentScreen(Screens.LOAD_GAME_SCREEN);
-			}
-		});
-
-		/*
-		 * FIXME load/save game menuButtonTable.add(loadGame);
-		 * menuButtonTable.row();
-		 */
 
 		TextButton quit = new TextButton(ui.translate("ui.quit"), skin, style.textButtonStyle);
 		quit.getLabel().setAlignment(getAlign());
@@ -308,13 +291,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			}
 		});
 
-		help = new Button(skin, "help");
-		help.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				ui.setCurrentScreen(Screens.HELP_SCREEN);
-			}
-		});
-
 		debug = new Button(skin, "debug");
 		debug.addListener(new ClickListener() {
 			public void clicked(InputEvent event, float x, float y) {
@@ -333,10 +309,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		 * FIXME Debug screen if (EngineLogger.debugMode() &&
 		 * world.getCurrentScene() != null) { iconStackTable.add(debug);
 		 * iconStackTable.row(); }
-		 */
-
-		/*
-		 * FIXME Help screen iconStackTable.add(help); iconStackTable.row();
 		 */
 
 		iconStackTable.add(credits);

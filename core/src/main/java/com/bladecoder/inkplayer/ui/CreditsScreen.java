@@ -144,6 +144,8 @@ public class CreditsScreen extends ScreenAdapter implements AppScreen {
 		}
 
 		batch.end();
+		
+		Gdx.graphics.requestRendering();
 	}
 
 	private float processCreditTitle(SpriteBatch batch, int width, int height, float y, int i, String s) {

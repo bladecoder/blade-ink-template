@@ -135,6 +135,9 @@ public class InkApp implements ApplicationListener {
 
 		// Capture back key
 		Gdx.input.setCatchBackKey(true);
+		
+		Gdx.graphics.setContinuousRendering(false);
+		Gdx.graphics.requestRendering();
 	}
 
 	@Override

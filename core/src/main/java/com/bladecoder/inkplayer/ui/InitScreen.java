@@ -75,6 +75,7 @@ public class InitScreen extends ScreenAdapter implements AppScreen {
 		time += delta;
 		fadeTime += delta;
 		batch.end();
+		Gdx.graphics.requestRendering();
 	}
 
 	@Override
