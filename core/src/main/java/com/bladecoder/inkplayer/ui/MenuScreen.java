@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.bladecoder.inkplayer.ui;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -30,6 +31,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -55,7 +57,7 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 	private Stage stage;
 	private Texture bgTexFile = null;
 	private Texture titleTexFile = null;
-	private Button credits;
+
 	private Button debug;
 
 	private final Table menuButtonTable = new Table();
@@ -80,7 +82,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		stage.getViewport().update(width, height, true);
 
 		float size = DPIUtils.getPrefButtonSize();
-		credits.setSize(size, size);
 		debug.setSize(size, size);
 	}
 
@@ -175,15 +176,15 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 			titleTexFile.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 			Image img = new Image(titleTexFile);
-			
-			float w = (float)titleTexFile.getWidth() / scale;
-			float h = (float)titleTexFile.getHeight() / scale;
-			
-			if(w > stage.getViewport().getScreenWidth() - DPIUtils.getMarginSize() * 4) {
+
+			float w = (float) titleTexFile.getWidth() / scale;
+			float h = (float) titleTexFile.getHeight() / scale;
+
+			if (w > stage.getViewport().getScreenWidth() - DPIUtils.getMarginSize() * 4) {
 				w = stage.getViewport().getScreenWidth() - DPIUtils.getMarginSize() * 4;
-				h = w *  (float)titleTexFile.getHeight() / (float)titleTexFile.getWidth();
+				h = w * (float) titleTexFile.getHeight() / (float) titleTexFile.getWidth();
 			}
-			
+
 			menuButtonTable.add(img).width(w).height(h).padBottom(DPIUtils.getMarginSize() * 2);
 
 			menuButtonTable.row();
@@ -195,16 +196,16 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 
 			continueGame.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
-					
-					if(ui.getStoryManager().getStory() == null) {
+
+					if (ui.getStoryManager().getStory() == null) {
 						try {
 							ui.getStoryManager().loadGameState();
 						} catch (Exception e) {
-							Gdx.app.error( TAG, "LOADING GAME STATE.", e);
+							Gdx.app.error(TAG, "LOADING GAME STATE.", e);
 							Gdx.app.exit();
 						}
 					}
-					
+
 					ui.setCurrentScreen(Screens.STORY_SCREEN);
 				}
 			});
@@ -224,10 +225,10 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 								try {
 									ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
 								} catch (Exception e) {
-									Gdx.app.error( TAG, "IN NEW GAME", e);
+									Gdx.app.error(TAG, "IN NEW GAME", e);
 									Gdx.app.exit();
 								}
-								
+
 								ui.setCurrentScreen(Screens.STORY_SCREEN);
 							}
 						}
@@ -253,16 +254,28 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					try {
 						ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
 					} catch (Exception e) {
-						Gdx.app.error( TAG, "IN NEW GAME", e);
+						Gdx.app.error(TAG, "IN NEW GAME", e);
 						Gdx.app.exit();
 					}
-					
+
 					ui.setCurrentScreen(Screens.STORY_SCREEN);
 				}
 			}
 		});
 
 		menuButtonTable.add(newGame);
+		menuButtonTable.row();
+
+		TextButton credits = new TextButton(ui.translate("ui.credits"), skin, style.textButtonStyle);
+		credits.getLabel().setAlignment(getAlign());
+		credits.addListener(new ClickListener() {
+			public void clicked(InputEvent event, float x, float y) {
+
+				ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+			}
+		});
+
+		menuButtonTable.add(credits);
 		menuButtonTable.row();
 
 		TextButton quit = new TextButton(ui.translate("ui.quit"), skin, style.textButtonStyle);
@@ -284,12 +297,6 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 		stage.addActor(menuButtonTable);
 
 		// BOTTOM-RIGHT BUTTON STACK
-		credits = new Button(skin, "credits");
-		credits.addListener(new ClickListener() {
-			public void clicked(InputEvent event, float x, float y) {
-				ui.setCurrentScreen(Screens.CREDIT_SCREEN);
-			}
-		});
 
 		debug = new Button(skin, "debug");
 		debug.addListener(new ClickListener() {
@@ -305,13 +312,11 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 				DPIUtils.getPrefButtonSize());
 		iconStackTable.pad(DPIUtils.getMarginSize() * 2);
 
-		/*
-		 * FIXME Debug screen if (EngineLogger.debugMode() &&
-		 * world.getCurrentScene() != null) { iconStackTable.add(debug);
-		 * iconStackTable.row(); }
-		 */
+		if (Gdx.app.getLogLevel() == Application.LOG_DEBUG && ui.getStoryManager().getStory() != null) {
+			iconStackTable.add(debug);
+			iconStackTable.row();
+		}
 
-		iconStackTable.add(credits);
 		iconStackTable.bottom().right();
 		iconStackTable.setFillParent(true);
 		iconStackTable.pack();
@@ -333,16 +338,24 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 				time = System.currentTimeMillis();
 
 				if (count == 4) {
-					/*
-					 * FIXME EngineLogger.toggle();
-					 * 
-					 * if (World.getInstance().isDisposed()) return;
-					 * 
-					 * if (EngineLogger.debugMode()) { iconStackTable.row();
-					 * iconStackTable.add(debug); } else { Cell<?> cell =
-					 * iconStackTable.getCell(debug);
-					 * iconStackTable.removeActor(debug); cell.reset(); }
-					 */
+					if (Gdx.app.getLogLevel() == Application.LOG_DEBUG) {
+						Gdx.app.setLogLevel(Application.LOG_ERROR);
+					} else {
+						Gdx.app.setLogLevel(Application.LOG_DEBUG);
+					}
+
+					if (ui.getStoryManager().getStory() == null)
+						return;
+
+					if (Gdx.app.getLogLevel() == Application.LOG_DEBUG) {
+						iconStackTable.row();
+						iconStackTable.add(debug);
+					} else {
+						Cell<?> cell = iconStackTable.getCell(debug);
+						iconStackTable.removeActor(debug);
+						cell.reset();
+					}
+
 				}
 			}
 		});
