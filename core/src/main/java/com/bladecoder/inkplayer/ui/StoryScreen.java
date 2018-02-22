@@ -70,7 +70,7 @@ public class StoryScreen implements AppScreen {
 		
 		@Override
 		public void line(Line line) {
-			textPanel.addText(line, new Runnable() {
+			textPanel.addLine(line, new Runnable() {
 
 				@Override
 				public void run() {
@@ -111,7 +111,7 @@ public class StoryScreen implements AppScreen {
 			
 			Line line = new Line(theEnd, new HashMap<String, String>(0));
 			
-			textPanel.addText(line, new Runnable() {
+			textPanel.addLine(line, new Runnable() {
 
 				@Override
 				public void run() {
@@ -204,7 +204,9 @@ public class StoryScreen implements AppScreen {
 
 		choicesUI.resize(width, height);
 		textPanel.resize(width, height);
-		textPanel.setY(textPanel.getY() + tmpMoveByAmountY);
+		
+		if(choicesUI.isVisible())
+			textPanel.setY(textPanel.getY() + tmpMoveByAmountY);
 	}
 
 	public void dispose() {
@@ -245,6 +247,17 @@ public class StoryScreen implements AppScreen {
 		}
 	}
 	
+	public void loadGame() {
+		try {
+			resetUI();
+			storyManager.loadGameState();
+			storyManager.next();
+		} catch (Exception e) {
+			Gdx.app.error( TAG, "IN NEW GAME", e);
+			Gdx.app.exit();
+		}
+	}
+	
 	private void resetUI() {
 		choicesUI.setVisible(false);
 		textPanel.clearPanel();
@@ -259,7 +272,11 @@ public class StoryScreen implements AppScreen {
 		Gdx.input.setInputProcessor( multiplexer );
 		stage.setScrollFocus(textPanel);
 		
+		//choicesUI.setVisible(false);
+		tmpMoveByAmountY = 0;
 		textPanel.show();
+		
+		//storyManager.next();
 	}
 
 	@Override
@@ -284,7 +301,6 @@ public class StoryScreen implements AppScreen {
 		stage = new Stage(viewport);
 
 		//recorder = ui.getRecorder();
-		//testerBot = ui.getTesterBot();
 
 		menuButton = new Button(ui.getSkin(), "menu");
 		choicesUI = new ChoicesUI(this);

@@ -23,6 +23,10 @@ public class Line {
 		this.params = p;
 	}
 	
+	public Line() {
+		
+	}
+	
 	public String text;
 	public HashMap<String, String> params;
 }

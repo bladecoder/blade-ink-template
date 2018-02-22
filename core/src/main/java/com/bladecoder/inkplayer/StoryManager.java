@@ -151,7 +151,7 @@ public class StoryManager implements Serializable {
 	public void next() {
 		String line = null;
 
-		HashMap<String, String> currentLineParams = new HashMap<String, String>();
+		HashMap<String, String> currentLineParams = new HashMap<String, String>(0);
 
 		if (story.canContinue()) {
 			try {
@@ -257,9 +257,10 @@ public class StoryManager implements Serializable {
 
 		String tline =  translateLine(line);
 		
+		Line line2 = new Line(tline, params);
+		record.add(line2);
+		
 		if(l != null) {
-			Line line2 = new Line(tline, params);
-			record.add(line2);
 			l.line(line2);
 		}
 	}
@@ -416,7 +417,7 @@ public class StoryManager implements Serializable {
 		json.writeValue("storyName", storyName);
 
 		if (story != null) {
-			json.writeValue("texts", record, ArrayList.class, Line.class);
+			json.writeValue("record", record, ArrayList.class, Line.class);
 			
 			try {
 				json.writeValue("story", story.getState().toJson());

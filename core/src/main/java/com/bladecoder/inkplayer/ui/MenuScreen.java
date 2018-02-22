@@ -197,13 +197,9 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 
 			continueGame.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
-					if (ui.getStoryManager().getStory() == null)
-						try {
-							ui.getStoryManager().loadGameState();
-						} catch (Exception e) {
-							Gdx.app.exit();
-						}
-
+					if(ui.getStoryManager().getStory() == null)
+						((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).loadGame();
+					
 					ui.setCurrentScreen(Screens.SCENE_SCREEN);
 				}
 			});

@@ -24,19 +24,19 @@ import com.bladecoder.inkplayer.common.DPIUtils;
  */
 public class TextPanel extends ScrollPane {
 	private static final float DEFAULT_WAITING_TIME = 1f;
-	
+
 	private final String STYLE_PARAM = "style";
 	private final String COLOR_PARAM = "color";
-	
+
 	private TextPanelStyle style;
 	private ObjectMap<String, LabelStyle> labelStyles;
 	private Table panel;
-	
+
 	private StoryManager sm;
 
 	public TextPanel(UI ui) {
 		super(new Table(ui.getSkin()));
-		
+
 		Skin skin = ui.getSkin();
 		sm = ui.getStoryManager();
 
@@ -53,36 +53,31 @@ public class TextPanel extends ScrollPane {
 		// panel.debug();
 		panel.defaults().expandX().pad(DPIUtils.getSpacing());
 		panel.bottom().left();
-		
+
 		setVisible(false);
 	}
 
 	public void show() {
 		setVisible(true);
-		
+
 		resize(getStage().getViewport().getScreenWidth(), getStage().getViewport().getScreenHeight());
 
 		addAction(Actions.sequence(Actions.alpha(0), Actions.alpha(1, 0.7f)));
 	}
-	
+
 	public void resize(int width, int height) {
-		if(height > width)
-			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.9f : 0.7f),
-					height * 0.75f); // portrait
+		if (height > width)
+			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.9f : 0.7f), height * 0.75f); // portrait
 		else
-			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f),
-				height * 0.9f); // landscape
-		
-		setPosition((width - getWidth()) / 2,
-				height - getHeight());
-		
+			setSize(width * (DPIUtils.getSizeMultiplier() < 1.2 ? 0.8f : 0.6f), height * 0.9f); // landscape
+
+		setPosition((width - getWidth()) / 2, height - getHeight());
+
 		panel.clearChildren();
-		
+
 		// refill panel
-		for(Line l: sm.getRecod())
-			addLine(l);
-		
-		setScrollPercentY(1);
+		for (Line l : sm.getRecod())
+			addLine(l, null);
 	}
 
 	public void hide() {
@@ -93,19 +88,12 @@ public class TextPanel extends ScrollPane {
 		return style.background;
 	}
 
-	public void addText(Line line, Runnable runWhenEnds) {
-		
-		addLine(line);
-		setScrollPercentY(1);
-		
-		if(runWhenEnds != null)
-			addAction(Actions.sequence(Actions.delay(calcWaitingTime(line.text)), Actions.run(runWhenEnds)));
-	}
-	
-	private void addLine(Line line) {
+	public void addLine(Line line, Runnable runWhenEnds) {
+
 		float margin = DPIUtils.getSpacing() * 4;
-		
-		Label l = new Label(line.text, line.params.get(STYLE_PARAM) == null ? style.labelStyle : labelStyles.get(line.params.get(STYLE_PARAM)));
+
+		Label l = new Label(line.text, line.params.get(STYLE_PARAM) == null ? style.labelStyle
+				: labelStyles.get(line.params.get(STYLE_PARAM)));
 		Table tl = new Table();
 		tl.defaults().pad(DPIUtils.getSpacing(), margin, DPIUtils.getSpacing(), margin);
 		tl.setBackground(l.getStyle().background);
@@ -130,15 +118,19 @@ public class TextPanel extends ScrollPane {
 		}
 
 		panel.row();
+		panel.invalidateHierarchy();
 		panel.pack();
-		panel.layout();
 		layout();
+		setScrollPercentY(1);
+
+		if (runWhenEnds != null) {
+			addAction(Actions.sequence(Actions.delay(calcWaitingTime(line.text)), Actions.run(runWhenEnds)));
+		}
 	}
-	
+
 	private float calcWaitingTime(String text) {
 		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
 	}
-
 
 	public void clearPanel() {
 		panel.clear();
@@ -146,7 +138,7 @@ public class TextPanel extends ScrollPane {
 
 	public void addLines(List<Line> l) {
 		for (Line t : l)
-			addText(t, null);
+			addLine(t, null);
 	}
 
 	static public class TextPanelStyle {
