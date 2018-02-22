@@ -8,4 +8,6 @@ public interface StoryListener {
 	public void command(String name, HashMap<String, String> params);
 	public void choices(List<String> choices);
 	public void end();
+	public void newGame();
+	public void loadGame();
 }

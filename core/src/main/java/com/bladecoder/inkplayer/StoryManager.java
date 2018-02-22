@@ -75,6 +75,8 @@ public class StoryManager implements Serializable {
 
 			loadI18NBundle();
 			record.clear();
+			if(l != null)
+				l.newGame();
 		} catch (Exception e) {
 			Gdx.app.error( TAG, "Cannot load Ink Story: " + storyName + " " + e.getMessage());
 		}
@@ -361,6 +363,9 @@ public class StoryManager implements Serializable {
 			savedFile = EngineAssetManager.getInstance().getAsset("tests/" + filename);
 
 		loadGameState(savedFile);
+		
+		if(l != null)
+			l.loadGame();
 	}
 
 	public void loadGameState(FileHandle savedFile) throws IOException {

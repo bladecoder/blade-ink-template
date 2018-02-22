@@ -53,16 +53,6 @@ public class TextPanel extends ScrollPane {
 		// panel.debug();
 		panel.defaults().expandX().pad(DPIUtils.getSpacing());
 		panel.bottom().left();
-
-		setVisible(false);
-	}
-
-	public void show() {
-		setVisible(true);
-
-		resize(getStage().getViewport().getScreenWidth(), getStage().getViewport().getScreenHeight());
-
-		addAction(Actions.sequence(Actions.alpha(0), Actions.alpha(1, 0.7f)));
 	}
 
 	public void resize(int width, int height) {
@@ -78,10 +68,6 @@ public class TextPanel extends ScrollPane {
 		// refill panel
 		for (Line l : sm.getRecod())
 			addLine(l, null);
-	}
-
-	public void hide() {
-		addAction(Actions.sequence(Actions.alpha(0, 0.7f), Actions.removeActor()));
 	}
 
 	public Drawable getBackground() {
@@ -130,10 +116,6 @@ public class TextPanel extends ScrollPane {
 
 	private float calcWaitingTime(String text) {
 		return DEFAULT_WAITING_TIME + DEFAULT_WAITING_TIME * text.length() / 20f;
-	}
-
-	public void clearPanel() {
-		panel.clear();
 	}
 
 	public void addLines(List<Line> l) {

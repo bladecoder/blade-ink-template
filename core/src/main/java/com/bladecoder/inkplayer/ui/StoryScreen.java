@@ -42,15 +42,14 @@ import com.bladecoder.inkplayer.Line;
 import com.bladecoder.inkplayer.StoryListener;
 import com.bladecoder.inkplayer.StoryManager;
 import com.bladecoder.inkplayer.assets.EngineAssetManager;
-import com.bladecoder.inkplayer.common.Config;
 import com.bladecoder.inkplayer.common.DPIUtils;
 import com.bladecoder.inkplayer.ui.UI.Screens;
 
 public class StoryScreen implements AppScreen {
-	private static final String TAG="StoryScreen";
-	
+	private static final String TAG = "StoryScreen";
+
 	private static final float CHOICES_SHOW_TIME = 1.5f;
-	
+
 	private UI ui;
 	private StoryManager storyManager;
 
@@ -59,15 +58,15 @@ public class StoryScreen implements AppScreen {
 	private Button menuButton;
 	private ChoicesUI choicesUI;
 	private TextPanel textPanel;
-	
+
 	private Image background;
-	
+
 	private float tmpMoveByAmountY;
 
 	private final Viewport viewport;
-	
+
 	private final StoryListener storyListener = new StoryListener() {
-		
+
 		@Override
 		public void line(Line line) {
 			textPanel.addLine(line, new Runnable() {
@@ -76,55 +75,53 @@ public class StoryScreen implements AppScreen {
 				public void run() {
 					storyManager.next();
 				}
-				
+
 			});
 		}
-		 
+
 		@Override
 		public void command(String name, HashMap<String, String> params) {
-			
+
 		}
 
 		@Override
 		public void choices(List<String> choices) {
-			// Show options UI
-			choicesUI.show(choices);		
-			choicesUI.clearActions();
-
-			tmpMoveByAmountY = choicesUI.getHeight() - textPanel.getY() + DPIUtils.getMarginSize();
-			
-			if(tmpMoveByAmountY < 0) {
-				tmpMoveByAmountY = 0;
-			} else {
-				textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
-			}
-			
-			choicesUI.setVisible(true);
-			choicesUI.setY(-choicesUI.getHeight());
-			choicesUI.addAction(Actions.moveBy(0, choicesUI.getHeight(), CHOICES_SHOW_TIME, Interpolation.fade));
-			
+			showChoices(choices);
 		}
 
 		@Override
 		public void end() {
 			String theEnd = "THE END";
-			
+
 			Line line = new Line(theEnd, new HashMap<String, String>(0));
-			
+
 			textPanel.addLine(line, new Runnable() {
 
 				@Override
 				public void run() {
-					textPanel.addAction(Actions.sequence(Actions.delay(4), Actions.fadeOut(2), Actions.run(new Runnable() {
-						@Override
-						public void run() {
-							ui.setCurrentScreen(Screens.CREDIT_SCREEN);
-							textPanel.setColor(Color.WHITE);
-						}
-					})));				
+					textPanel.addAction(
+							Actions.sequence(Actions.delay(4), Actions.fadeOut(2), Actions.run(new Runnable() {
+								@Override
+								public void run() {
+									ui.setCurrentScreen(Screens.CREDIT_SCREEN);
+									textPanel.setColor(Color.WHITE);
+								}
+							})));
 				}
-				
+
 			});
+		}
+
+		@Override
+		public void newGame() {
+			resetUI();
+			storyManager.next();
+		}
+
+		@Override
+		public void loadGame() {
+			resetUI();
+			storyManager.next();
 		}
 	};
 
@@ -141,7 +138,7 @@ public class StoryScreen implements AppScreen {
 			case Input.Keys.D:
 				if (UIUtils.ctrl())
 					// FIXME EngineLogger.toggle();
-				break;
+					break;
 			case Input.Keys.SPACE:
 
 				break;
@@ -157,7 +154,7 @@ public class StoryScreen implements AppScreen {
 				// ui.toggleFullScreen();
 				break;
 			}
-			
+
 			return true;
 		}
 	};
@@ -174,6 +171,22 @@ public class StoryScreen implements AppScreen {
 		stage.act(delta);
 	}
 
+	private void showChoices(List<String> choices) {
+		choicesUI.show(choices);
+		choicesUI.clearActions();
+
+		tmpMoveByAmountY = choicesUI.getHeight() - textPanel.getY() + DPIUtils.getMarginSize();
+
+		if (tmpMoveByAmountY < 0) {
+			tmpMoveByAmountY = 0;
+		} else {
+			textPanel.addAction(Actions.moveBy(0, tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade));
+		}
+
+		choicesUI.setVisible(true);
+		choicesUI.setY(-choicesUI.getHeight());
+		choicesUI.addAction(Actions.moveBy(0, choicesUI.getHeight(), CHOICES_SHOW_TIME, Interpolation.fade));
+	}
 
 	@Override
 	public void render(float delta) {
@@ -182,31 +195,8 @@ public class StoryScreen implements AppScreen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-
 		// STAGE
 		stage.draw();
-	}
-
-
-
-	@Override
-	public void resize(int width, int height) {
-		viewport.update(width, height, true);
-
-		float size = DPIUtils.getPrefButtonSize();
-		float margin = DPIUtils.getMarginSize();
-
-		menuButton.setSize(size, size);
-		menuButton.setPosition(stage.getViewport().getScreenWidth() - menuButton.getWidth() - margin,
-				stage.getViewport().getScreenHeight() - menuButton.getHeight() - margin);
-		
-		background.setSize(width, height);
-
-		choicesUI.resize(width, height);
-		textPanel.resize(width, height);
-		
-		if(choicesUI.isVisible())
-			textPanel.setY(textPanel.getY() + tmpMoveByAmountY);
 	}
 
 	public void dispose() {
@@ -223,65 +213,63 @@ public class StoryScreen implements AppScreen {
 	}
 
 	public void selectChoice(final int i) {
-		textPanel.addAction(Actions.sequence(Actions.moveBy(0, -tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade), 
-				Actions.run(new Runnable() {
-					
-					@Override
-					public void run() {
-						storyManager.selectChoice(i);
-						storyManager.next();
-						tmpMoveByAmountY = 0;
-					}
-				})));
+		textPanel
+				.addAction(Actions.sequence(Actions.moveBy(0, -tmpMoveByAmountY, CHOICES_SHOW_TIME, Interpolation.fade),
+						Actions.run(new Runnable() {
+
+							@Override
+							public void run() {
+								storyManager.selectChoice(i);
+								storyManager.next();
+								tmpMoveByAmountY = 0;
+							}
+						})));
 	}
-	
-	
-	public void newGame() {
-		try {
-			resetUI();
-			storyManager.newStory(Config.getProperty(Config.STORY, "story.ink.json"));
-			storyManager.next();
-		} catch (Exception e) {
-			Gdx.app.error( TAG, "IN NEW GAME", e);
-			Gdx.app.exit();
-		}
-	}
-	
-	public void loadGame() {
-		try {
-			resetUI();
-			storyManager.loadGameState();
-			storyManager.next();
-		} catch (Exception e) {
-			Gdx.app.error( TAG, "IN NEW GAME", e);
-			Gdx.app.exit();
-		}
-	}
-	
+
 	private void resetUI() {
 		choicesUI.setVisible(false);
-		textPanel.clearPanel();
+		choicesUI.clearActions();
+		textPanel.clearActions();
 		tmpMoveByAmountY = 0;
 	}
 
 	@Override
 	public void show() {
 		InputMultiplexer multiplexer = new InputMultiplexer();
-		multiplexer.addProcessor( stage );
-		multiplexer.addProcessor( inputProcessor ); 
-		Gdx.input.setInputProcessor( multiplexer );
+		multiplexer.addProcessor(stage);
+		multiplexer.addProcessor(inputProcessor);
+		Gdx.input.setInputProcessor(multiplexer);
 		stage.setScrollFocus(textPanel);
-		
-		//choicesUI.setVisible(false);
-		tmpMoveByAmountY = 0;
-		textPanel.show();
-		
-		//storyManager.next();
+
+		textPanel.addAction(Actions.sequence(Actions.alpha(0), Actions.alpha(1, 0.7f)));
+	}
+
+	@Override
+	public void resize(int width, int height) {
+		Gdx.app.log(TAG, "RESIZING STORY SCREEN.");
+
+		viewport.update(width, height, true);
+
+		float size = DPIUtils.getPrefButtonSize();
+		float margin = DPIUtils.getMarginSize();
+
+		menuButton.setSize(size, size);
+		menuButton.setPosition(stage.getViewport().getScreenWidth() - menuButton.getWidth() - margin,
+				stage.getViewport().getScreenHeight() - menuButton.getHeight() - margin);
+
+		background.setSize(width, height);
+
+		choicesUI.resize(width, height);
+		textPanel.resize(width, height);
+
+		if (storyManager.hasChoices()) {
+			textPanel.clearActions();
+			showChoices(storyManager.getChoices());
+		}
 	}
 
 	@Override
 	public void hide() {
-
 	}
 
 	@Override
@@ -297,19 +285,19 @@ public class StoryScreen implements AppScreen {
 		this.ui = ui;
 		StoryScreenStyle style = ui.getSkin().get(StoryScreenStyle.class);
 		storyManager = ui.getStoryManager();
-		
+
 		stage = new Stage(viewport);
 
-		//recorder = ui.getRecorder();
+		// recorder = ui.getRecorder();
 
 		menuButton = new Button(ui.getSkin(), "menu");
 		choicesUI = new ChoicesUI(this);
 		textPanel = new TextPanel(ui);
-		
-		if(style.bgFile != null) {
+
+		if (style.bgFile != null) {
 			Texture tex = new Texture(EngineAssetManager.getInstance().getResAsset(style.bgFile));
 			tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-			
+
 			background = new Image(tex);
 			stage.addActor(background);
 		}
@@ -320,13 +308,15 @@ public class StoryScreen implements AppScreen {
 			}
 		});
 
+		choicesUI.setVisible(false);
+
 		stage.addActor(textPanel);
 		stage.addActor(choicesUI);
 		stage.addActor(menuButton);
-		
+
 		storyManager.setStoryListener(storyListener);
 	}
-	
+
 	/** The style for the MenuScreen */
 	public static class StoryScreenStyle {
 		/** Optional. */

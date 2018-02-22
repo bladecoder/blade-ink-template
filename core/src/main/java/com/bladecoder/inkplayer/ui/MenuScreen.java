@@ -50,6 +50,8 @@ import com.bladecoder.inkplayer.ui.UI.Screens;
 public class MenuScreen extends ScreenAdapter implements AppScreen {
 	// private final static float BUTTON_PADDING = DPIUtils.UI_SPACE;
 
+	private static final String TAG = "MenuScreen";
+
 	private UI ui;
 
 	private Stage stage;
@@ -197,8 +199,15 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 
 			continueGame.addListener(new ClickListener() {
 				public void clicked(InputEvent event, float x, float y) {
-					if(ui.getStoryManager().getStory() == null)
-						((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).loadGame();
+					
+					if(ui.getStoryManager().getStory() == null) {
+						try {
+							ui.getStoryManager().loadGameState();
+						} catch (Exception e) {
+							Gdx.app.error( TAG, "LOADING GAME STATE.", e);
+							Gdx.app.exit();
+						}
+					}
 					
 					ui.setCurrentScreen(Screens.SCENE_SCREEN);
 				}
@@ -216,7 +225,13 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					Dialog d = new Dialog("", skin) {
 						protected void result(Object object) {
 							if (((Boolean) object).booleanValue()) {
-								((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).newGame();
+								try {
+									ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
+								} catch (Exception e) {
+									Gdx.app.error( TAG, "IN NEW GAME", e);
+									Gdx.app.exit();
+								}
+								
 								ui.setCurrentScreen(Screens.SCENE_SCREEN);
 							}
 						}
@@ -239,7 +254,13 @@ public class MenuScreen extends ScreenAdapter implements AppScreen {
 					d.show(stage);
 				} else {
 
-					((StoryScreen) ui.getScreen(Screens.SCENE_SCREEN)).newGame();
+					try {
+						ui.getStoryManager().newStory(Config.getProperty(Config.STORY, "story.ink.json"));
+					} catch (Exception e) {
+						Gdx.app.error( TAG, "IN NEW GAME", e);
+						Gdx.app.exit();
+					}
+					
 					ui.setCurrentScreen(Screens.SCENE_SCREEN);
 				}
 			}
