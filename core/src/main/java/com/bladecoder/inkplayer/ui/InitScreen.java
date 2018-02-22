@@ -44,6 +44,7 @@ public class InitScreen extends ScreenAdapter implements AppScreen {
 
 	@Override
 	public void render(float delta) {
+		Gdx.graphics.requestRendering();
 		SpriteBatch batch = ui.getBatch();
 
 		Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -75,7 +76,6 @@ public class InitScreen extends ScreenAdapter implements AppScreen {
 		time += delta;
 		fadeTime += delta;
 		batch.end();
-		Gdx.graphics.requestRendering();
 	}
 
 	@Override

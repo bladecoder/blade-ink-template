@@ -87,6 +87,8 @@ public class CreditsScreen extends ScreenAdapter implements AppScreen {
 
 	@Override
 	public void render(float delta) {
+		Gdx.graphics.requestRendering();
+		
 		final SpriteBatch batch = ui.getBatch();
 		final int width = (int) viewport.getWorldWidth();
 		final int height = (int) viewport.getWorldHeight();
@@ -144,8 +146,6 @@ public class CreditsScreen extends ScreenAdapter implements AppScreen {
 		}
 
 		batch.end();
-		
-		Gdx.graphics.requestRendering();
 	}
 
 	private float processCreditTitle(SpriteBatch batch, int width, int height, float y, int i, String s) {
