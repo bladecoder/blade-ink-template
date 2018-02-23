@@ -26,12 +26,9 @@ public class Config {
 	public static final String TITLE_PROP="title";
 	public static final String LOAD_GAMESTATE_PROP="load_gamestate";
 	public static final String PLAY_RECORD_PROP="play_recording";
-	public static final String TEST_SCENE_PROP="test_scene";
+	public static final String INITPATH_PROP="init_path";
 	public static final String FORCE_RES_PROP = "force_res";
 	public static final String DEBUG_PROP = "debug";
-	public static final String CHAPTER_PROP = "chapter";
-	public static final String SHOW_DESC_PROP = "show_desc";
-	public static final String EXTEND_VIEWPORT_PROP = "extend_viewport";
 	public static final String VERSION_PROP = "version";
 	public static final String BLADE_INK_VERSION_PROP = "bladeInkVersion";
 	public static final String AUTO_HIDE_TEXTS = "auto_hide_texts";

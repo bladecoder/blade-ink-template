@@ -105,7 +105,9 @@ public class DPIUtils {
 //	}
 	
 	public static float getSizeMultiplier() {
-		float inches = pixelsToInches(Gdx.graphics.getWidth());
+		int p = Gdx.graphics.getWidth() > Gdx.graphics.getHeight()? Gdx.graphics.getWidth():Gdx.graphics.getHeight();
+		
+		float inches = pixelsToInches(p);
 		float s = inches / 6f;
 
 		return Math.max(1.0f, s);

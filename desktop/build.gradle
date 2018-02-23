@@ -21,5 +21,23 @@ jar {
 }
 
 run {
-  ignoreExitValue = true
+    standardInput = System.in
+    ignoreExitValue = true
+    
+    if (project.hasProperty("appArgs") ) {  
+        args Eval.me(appArgs)  
+    }     
+}
+
+
+task dist(type: Jar) {
+    baseName =  appName + "-desktop"
+    
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from {configurations.compile.collect {zipTree(it)}}
+ 
+    manifest {
+        attributes 'Main-Class': project.mainClassName
+    }
 }

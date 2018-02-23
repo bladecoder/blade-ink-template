@@ -2,23 +2,14 @@ package com.bladecoder.inkplayer.desktop;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.nio.IntBuffer;
 import java.util.Properties;
-
-import com.bladecoder.inkplayer.InkApp;
-import com.bladecoder.inkplayer.common.Config;
-
-import org.lwjgl.BufferUtils;
-import org.lwjgl.LWJGLException;
-import org.lwjgl.input.Cursor;
-import org.lwjgl.input.Mouse;
 
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.bladecoder.inkplayer.InkApp;
+import com.bladecoder.inkplayer.common.Config;
 
 public class DesktopLauncher extends InkApp {
 
@@ -49,20 +40,6 @@ public class DesktopLauncher extends InkApp {
 	}
 
 	public void run() {
-		try {
-			// Init Steam if library is in the classpath
-			Class<?> cls = Class.forName("com.bladecoder.steam.SteamSupport");
-
-			Method method = cls.getMethod("init");
-			method.invoke(null);
-		} catch (ClassNotFoundException e) {
-			// Steam support disabled.
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e2) {
-			System.out.println("> STEAM INIT: Error invoking method.");
-			e2.printStackTrace();
-		}
-
 		if (DesktopLauncher.class.getResource("/icons/icon128.png") != null)
 			cfg.addIcon("icons/icon128.png", FileType.Internal);
 
@@ -78,10 +55,15 @@ public class DesktopLauncher extends InkApp {
 	public void parseParams(String[] args) {
 		for (int i = 0; i < args.length; i++) {
 			String s = args[i];
-			if (s.equals("-t")) {
+			if (s.equals("-p")) {
 				if (i + 1 < args.length) {
 					i++;
 					setPlayMode(args[i]);
+				}
+			} else if (s.equals("-initPath")) {
+				if (i + 1 < args.length) {
+					i++;
+					setInitPath(args[i]);
 				}
 			} else if (s.equals("-f")) {
 				fullscreen = true;
@@ -101,12 +83,17 @@ public class DesktopLauncher extends InkApp {
 
 					if (aspect.equals("16:9")) {
 						cfg.height = cfg.width * 9 / 16;
+					} else if (aspect.equals("9:16")) {
+						cfg.height = 800;
+						cfg.width = cfg.height * 9 / 16;
 					} else if (aspect.equals("4:3")) {
 						cfg.height = cfg.width * 3 / 4;
 					} else if (aspect.equals("16:10") || aspect.equals("8:5")) {
 						cfg.height = cfg.width * 10 / 16;
 					}
 				}
+				
+				fullscreen = false;
 			} else if (s.equals("-w")) {
 				fullscreen = false;
 			} else if (s.equals("-l")) {
@@ -129,11 +116,12 @@ public class DesktopLauncher extends InkApp {
 	public void usage() {
 		System.out.println("Usage:\n"
 				+ "-p record_name\tPlay previusly recorded games\n"
+				+ "-initPath path\tRun the specified path\n"
 				+ "-f\tSet fullscreen mode\n" + "-w\tSet windowed mode\n" 
 				+ "-d\tShow debug messages\n"
 				+ "-res width\tForce the resolution width\n" 
 				+ "-l game_state\tLoad the previusly saved game state\n"
-				+ "-aspect aspect_ratio\tSets the specified screen aspect (16:9, 4:3, 16:10)\n");
+				+ "-aspect aspect_ratio\tSets the specified screen aspect (16:9, 9:16, 4:3, 16:10)\n");
 
 		System.exit(0);
 	}
@@ -141,7 +129,7 @@ public class DesktopLauncher extends InkApp {
 	@Override
 	public void create() {	
 		if (fullscreen)
-			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
+			Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());	
 
 		super.create();
 	}

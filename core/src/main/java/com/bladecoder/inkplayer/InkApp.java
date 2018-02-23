@@ -31,18 +31,14 @@ public class InkApp implements ApplicationListener {
 	/* Run the specified path at init */
 	private String initPath;
 
-	private String gameState;
-	private String recordName;
 	private String forceRes;
 	private boolean debug = false;
 	private boolean restart = false;
+	private String gameState;
+	private String recordName;
 
 	private StoryManager storyManager;
 	private UI ui;
-
-	public static UI getAppUI() {
-		return ((InkApp) Gdx.app.getApplicationListener()).getUI();
-	}
 
 	public void setInitPath(String s) {
 		initPath = s;
@@ -95,47 +91,44 @@ public class InkApp implements ApplicationListener {
 		}
 
 		if (Gdx.app.getLogLevel() == Application.LOG_DEBUG) {
-			/*
-			 * if (chapter == null) chapter =
-			 * Config.getProperty(Config.CHAPTER_PROP, chapter);
-			 * 
-			 * if (testScene == null) { testScene =
-			 * Config.getProperty(Config.TEST_SCENE_PROP, testScene); }
-			 * 
-			 * if (testScene != null || chapter != null) { try {
-			 * World.getInstance().loadChapter(chapter, testScene, true); }
-			 * catch (Exception e) { dispose(); Gdx.app.debug.error("EXITING: "
-			 * + e.getMessage()); Gdx.app.exit(); }
-			 * 
-			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); }
-			 * 
-			 * if (gameState == null) gameState =
-			 * Config.getProperty(Config.LOAD_GAMESTATE_PROP, gameState);
-			 * 
-			 * if (gameState != null) { try {
-			 * World.getInstance().loadGameState(gameState); } catch
-			 * (IOException e) { Gdx.app.debug.error(e.getMessage()); } }
-			 * 
-			 * if (restart) { try { World.getInstance().loadChapter(null);
-			 * 
-			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); } catch (Exception
-			 * e) { Gdx.app.debug.error("ERROR LOADING GAME", e); dispose();
-			 * Gdx.app.exit(); } }
-			 * 
-			 * if (recordName == null) recordName =
-			 * Config.getProperty(Config.PLAY_RECORD_PROP, recordName);
-			 * 
-			 * if (recordName != null) {
-			 * ui.getRecorder().setFilename(recordName);
-			 * ui.getRecorder().load(); ui.getRecorder().setPlaying(true);
-			 * 
-			 * ui.setCurrentScreen(UI.Screens.SCENE_SCREEN); }
-			 */
+
+			if (initPath == null) {
+				initPath = Config.getProperty(Config.INITPATH_PROP, initPath);
+			}
+
+			if (initPath != null) {
+				try {
+					StoryListener sl = storyManager.getStoryListener();
+					storyManager.setStoryListener(null);
+					storyManager.newStory(Config.getProperty(Config.STORY, "story.ink.json"));
+					storyManager.run(initPath);
+					storyManager.setStoryListener(sl);
+					storyManager.next();
+				} catch (Exception e) {
+					dispose();
+					Gdx.app.error(TAG, "EXITING: " + e.getMessage());
+					Gdx.app.exit();
+				}
+
+				ui.setCurrentScreen(UI.Screens.STORY_SCREEN);
+			}
+			
+			if(restart) {
+				// TODO
+			}
+			
+			if(gameState != null) {
+				// TODO
+			}
+			
+			if(recordName != null) {
+				// TODO
+			}
 		}
 
 		// Capture back key
 		Gdx.input.setCatchBackKey(true);
-		
+
 		Gdx.graphics.setContinuousRendering(false);
 		Gdx.graphics.requestRendering();
 	}
@@ -164,10 +157,12 @@ public class InkApp implements ApplicationListener {
 		Gdx.app.debug(TAG, "GAME PAUSE");
 		ui.pause();
 
-		try {
-			ui.getStoryManager().saveGameState();
-		} catch (IOException e) {
-			Gdx.app.error(TAG, e.getMessage());
+		if (ui.getStoryManager().getStory() != null) {
+			try {
+				ui.getStoryManager().saveGameState();
+			} catch (IOException e) {
+				Gdx.app.error(TAG, e.getMessage());
+			}
 		}
 	}
 

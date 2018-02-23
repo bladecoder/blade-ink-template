@@ -339,6 +339,10 @@ public class StoryManager implements Serializable {
 		this.l = sl;
 	}
 	
+	public StoryListener getStoryListener() {
+		return l;
+	}
+	
 	public boolean savedGameExists() {
 		return savedGameExists(GAMESTATE_FILENAME);
 	}
