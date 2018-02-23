@@ -23,7 +23,7 @@ import com.bladecoder.inkplayer.common.DPIUtils;
  * @author rgarcia
  */
 public class TextPanel extends ScrollPane {
-	private static final float DEFAULT_WAITING_TIME = 0.9f;
+	private static final float DEFAULT_WAITING_TIME = 0.95f;
 
 	private final String STYLE_PARAM = "style";
 	private final String COLOR_PARAM = "color";
