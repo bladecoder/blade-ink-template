@@ -32,11 +32,11 @@ run {
 
 task dist(type: Jar) {
     baseName =  appName + "-desktop"
-    
-    from files(sourceSets.main.output.classesDir)
+
+    from files(sourceSets.main.output.classesDirs)
     from files(sourceSets.main.output.resourcesDir)
-    from {configurations.compile.collect {zipTree(it)}}
- 
+    from {configurations.runtimeClasspath.collect {zipTree(it)}}
+
     manifest {
         attributes 'Main-Class': project.mainClassName
     }

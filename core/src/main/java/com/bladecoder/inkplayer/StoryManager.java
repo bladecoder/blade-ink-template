@@ -135,9 +135,9 @@ public class StoryManager implements Serializable {
 			if (rawList.getOrigins() == null) {
 				List<String> names = rawList.getOriginNames();
 				if (names != null) {
-					ArrayList<ListDefinition> origins = new ArrayList<ListDefinition>();
+					ArrayList<ListDefinition> origins = new ArrayList<>();
 					for (String n : names) {
-						ListDefinition def = story.getListDefinitions().getDefinition(n);
+						ListDefinition def = story.getListDefinitions().getListDefinition(n);
 						if (!origins.contains(def))
 							origins.add(def);
 					}
@@ -177,6 +177,7 @@ public class StoryManager implements Serializable {
 					}
 				} else {
 					Gdx.app.debug( TAG, "INK EMPTY LINE!");
+					next();
 				}
 			} catch (Exception e) {
 				Gdx.app.error( TAG, e.getMessage(), e);
