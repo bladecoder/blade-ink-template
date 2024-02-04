@@ -17,7 +17,7 @@ Features:
 
 ## 2. Export your story to Blade Ink Template
 
-- Make sure you have installed the [JDK 8](http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
+- Make sure you have installed the [JDK 17](https://adoptium.net/es/)
 - Download the [Blade Ink Template](https://github.com/bladecoder/blade-ink-template).
 - Export your story to JSON from Inky as `story.ink.json` and copy it to the `assets` folder in the Blade Ink Template.
 - You can now test your story with `./gradlew desktop:run` in Mac and Linux, or `gradlew.bat desktop:run` in Windows.
