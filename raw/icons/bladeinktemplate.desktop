@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Blade Ink Template
+Comment=Blade Ink Template
+Exec=$HOME/bladeinktemplate/bin/bladeinktemplate
+Terminal=false
+Categories=Games;
