@@ -5,7 +5,7 @@ set -e
 DIST_DIR=$HOME"/PACKAGES"
 
 # IOS signing
-IOS_SIGN_IDENTITY="iPhone Distribution"
+IOS_SIGN_IDENTITY="Apple Distribution"
 IOS_PROVISIONING_PROFILE=XXX
 
 # Android signing
@@ -32,7 +32,7 @@ else
   sed -i 's/version=.*/version='$VERSION'/' gradle.properties
 fi
 
-if [ "$RELEASE_MODE" == "android" ]; then
+if [ "$RELEASE_MODE" == "android" ]  || [ "$RELEASE_MODE" == "apk" ] || [ "$RELEASE_MODE" == "aab" ]; then
   echo -n "Version Code: "
   read VERSION_CODE
   echo
@@ -43,10 +43,18 @@ if [ "$RELEASE_MODE" == "android" ]; then
   read -s KEY_PASSWD
   echo
 
-  RELFILENAME="$DIST_DIR"/$PROJECT_NAME-$VERSION.apk
+  if [ "$RELEASE_MODE" == "aab" ] ; then
+   RELFILENAME="$DIST_DIR"/$PROJECT_NAME-$VERSION.aab
 
-  ./gradlew -Pkeystore=$ANDROID_KEYSTORE -PstorePassword=$KEYSTORE_PASSWD -Palias=$ANDROID_KEY_ALIAS -PkeyPassword=$KEY_PASSWD android:assembleRelease -Pversion=$VERSION  -PversionCode=$VERSION_CODE
-  cp android/build/outputs/apk/android-release.apk "$RELFILENAME"
+   ./gradlew -Pkeystore=$ANDROID_KEYSTORE -PstorePassword=$KEYSTORE_PASSWD -Palias=$ANDROID_KEY_ALIAS -PkeyPassword=$KEY_PASSWD android:bundleRelease -Pversion=$VERSION  -PversionCode=$VERSION_CODE -Passet_pack
+   cp android/build/outputs/bundle/release/android-release.aab "$RELFILENAME"
+  else
+    RELFILENAME="$DIST_DIR"/$PROJECT_NAME-$VERSION.apk
+
+    ./gradlew -Pkeystore=$ANDROID_KEYSTORE -PstorePassword=$KEYSTORE_PASSWD -Palias=$ANDROID_KEY_ALIAS -PkeyPassword=$KEY_PASSWD android:assembleRelease -Pversion=$VERSION  -PversionCode=$VERSION_CODE
+    cp android/build/outputs/apk/release/android-release.apk "$RELFILENAME"
+  fi
+
 elif [[ "$RELEASE_MODE" == "desktop" ]]; then
   RELFILENAME="$DIST_DIR"/$PROJECT_NAME-steam-$VERSION.jar
   ./gradlew desktop:dist -Pversion=$VERSION

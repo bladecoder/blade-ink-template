@@ -2,26 +2,26 @@
 eclipse.project.name = appName + '-core'
 
 dependencies {
-  compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-  compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-  compile "com.bladecoder.ink:blade-ink:$bladeInkVersion"
+  api "com.badlogicgames.gdx:gdx:$gdxVersion"
+  api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+  api "com.bladecoder.ink:blade-ink:$bladeInkVersion"
 }
 
 
-task setVersion(type: WriteProperties) {
-	println "Set version info in BladeEngine.properties"
+tasks.register('setVersion', WriteProperties) {
+  def props = new Properties()
+  def propFile = project.file("../assets/inkplayer.properties");
+  props.load(new FileReader(propFile))
 
-	def props = new Properties()
-	def propFile = project.file("../assets/inkplayer.properties");
-	props.load(new FileReader(propFile))
+  props."version" = version
+  props."bladeInkVersion" = bladeInkVersion
+  props."gdxVersion" = gdxVersion
+  props."roboVMVersion" = robovmVersion
 
-    props."version" = version
-	props."bladeInkVersion" = bladeInkVersion
-	props."gdxVersion" = gdxVersion
-	props."roboVMVersion" = robovmVersion
+  setProperties(props);
+  setOutputFile(propFile);
 
-	setProperties(props);
-	setOutputFile(propFile);
+  doLast {
+    println "Set version info in inkplayer.properties"
+  }
 }
-
-processResources.finalizedBy(setVersion)   

@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'https://plugins.gradle.org/m2/' }
+        gradlePluginPortal()
         google()
     }
     dependencies {
@@ -12,14 +12,49 @@ buildscript {
 }
 
 allprojects {
-  apply plugin: 'eclipse'
-  apply plugin: 'idea'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
+    idea {
+        module {
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/java/test')
+        }
+    }
 }
 
 configure(subprojects - project(':android')) {
-  apply plugin: 'java'
-  sourceCompatibility = 1.7
+    apply plugin: 'java-library'
+    sourceCompatibility = 11
+    compileJava {
+        options.incremental = true
+    }
+    // From https://lyze.dev/2021/04/29/libGDX-Internal-Assets-List/
+    // The article can be helpful when using assets.txt in your project.
+    compileJava.doLast {
+        // projectFolder/assets
+        def assetsFolder = new File("${project.rootDir}/assets/")
+        // projectFolder/assets/assets.txt
+        def assetsFile = new File(assetsFolder, "assets.txt")
+        // delete that file in case we've already created it
+        assetsFile.delete()
+
+        // iterate through all files inside that folder
+        // convert it to a relative path
+        // and append it to the file assets.txt
+        fileTree(assetsFolder).collect { assetsFolder.relativePath(it) }.each {
+            assetsFile.append(it + "\n")
+        }
+    }
+
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(11)
+        }
+    }
 }
+
 
 subprojects {
     repositories {
@@ -32,26 +67,23 @@ subprojects {
    }
 }
 
-tasks.eclipse.doLast {
-    delete ".project"
-    delete '.classpath'
-    delete '.settings/'
-}
+eclipse.project.name = 'blade-ink-template' + '-parent'
 
 // Run `gradle pack` task to generate skin.atlas file at assets/ui.
 import com.badlogic.gdx.tools.texturepacker.TexturePacker
-task pack {
-  
-  doLast {
 
-	  // Note that if you need multiple atlases, you can duplicate the
-	  // TexturePacker.process invocation and change paths to generate
-	  // additional atlases with this task.
-	  TexturePacker.process(
-	    'images-raw/ui',           // Raw assets path.
-	    'assets/ui/1/',        // Output directory.
-	    'ui'              // Name of the generated atlas (without extension).
-	  )
-  }
+tasks.register('pack') {
+
+    doLast {
+
+        // Note that if you need multiple atlases, you can duplicate the
+        // TexturePacker.process invocation and change paths to generate
+        // additional atlases with this task.
+        TexturePacker.process(
+            'raw/ui',           // Raw assets path.
+            'assets/ui/1/',        // Output directory.
+            'ui'              // Name of the generated atlas (without extension).
+        )
+    }
 }
 

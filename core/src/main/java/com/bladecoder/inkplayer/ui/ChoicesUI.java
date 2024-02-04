@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2014 Rafael Garcia Moreno.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,16 +37,16 @@ import com.bladecoder.inkplayer.common.DPIUtils;
 public class ChoicesUI extends ScrollPane {
 	public static final String DIALOG_END_COMMAND = "dialog_end";
 
-	private ChoicesUIStyle style;
+	private final ChoicesUIStyle style;
 
 	// private Recorder recorder;
 
-	private Table panel;
+	private final Table panel;
 
-	private Button up;
-	private Button down;
+	private final Button up;
+	private final Button down;
 
-	private StoryScreen sc;
+	private final StoryScreen sc;
 
 	public ChoicesUI(StoryScreen sc) {
 		super(new Table(sc.getUI().getSkin()), sc.getUI().getSkin());
@@ -78,15 +78,15 @@ public class ChoicesUI extends ScrollPane {
 			public boolean handle(Event event) {
 				if (isScrollY()) {
 
-					if (getScrollPercentY() > 0f && up.isVisible() == false) {
+					if (getScrollPercentY() > 0f && !up.isVisible()) {
 						up.setVisible(true);
-					} else if (getScrollPercentY() == 0f && up.isVisible() == true) {
+					} else if (getScrollPercentY() == 0f && up.isVisible()) {
 						up.setVisible(false);
 					}
 
-					if (getScrollPercentY() < 1f && down.isVisible() == false) {
+					if (getScrollPercentY() < 1f && !down.isVisible()) {
 						down.setVisible(true);
-					} else if (getScrollPercentY() == 1f && down.isVisible() == true) {
+					} else if (getScrollPercentY() == 1f && down.isVisible()) {
 						down.setVisible(false);
 					}
 				}
@@ -113,16 +113,19 @@ public class ChoicesUI extends ScrollPane {
 	public void show(List<String> choices) {
 		setVisible(true);
 
-		if (choices.size() == 0)
-			return;
+		if (choices.isEmpty()) {
+            setVisible(false);
+            return;
 
-		else if (style.autoselect && choices.size() == 1) {
+        } else if (style.autoselect && choices.size() == 1) {
 			// If only has one option, autoselect it
 			select(0);
+            setVisible(false);
 			return;
 		}
 
 		panel.clear();
+        setScrollPercentY(0);
 
 		for (int i = 0; i < choices.size(); i++) {
 			String str = choices.get(i);
@@ -143,20 +146,55 @@ public class ChoicesUI extends ScrollPane {
 			});
 		}
 
-		panel.pack();
+        setWidth(getStage().getViewport().getScreenWidth());
+        setHeight(Math.min(panel.getPrefHeight(), getStage().getViewport().getScreenHeight() / 2f));
 
-		getStage().addActor(up);
-		up.setVisible(false);
+        float size = DPIUtils.getPrefButtonSize() * .8f;
+        float margin = DPIUtils.getSpacing();
 
-		getStage().addActor(down);
-		down.setVisible(false);
+        getStage().addActor(up);
+        up.setSize(size, size);
+        up.setPosition(getX() + getWidth() - size - margin, getY() + getHeight() - margin - size);
 
-		resize(getStage().getViewport().getScreenWidth(), getStage().getViewport().getScreenHeight());
+        getStage().addActor(down);
+        down.setSize(size, size);
+        down.setPosition(getX() + getWidth() - size - margin, getY() + margin);
+
+        layout();
+
+        setUpDownVisibility();
+
+        if (down.isVisible()) {
+            down.addAction(
+                Actions.repeat(3, Actions.sequence(Actions.moveBy(0, 15, .08f), Actions.moveBy(0, -15, .08f))));
+        }
+
+        getStage().setScrollFocus(this);
 	}
+
+    public void setUpDownVisibility() {
+        if (isScrollY() && getMaxY() > DPIUtils.getMarginSize()) {
+
+            if (getScrollPercentY() > 0f && !up.isVisible()) {
+                up.setVisible(true);
+            } else if (getScrollPercentY() == 0f && up.isVisible()) {
+                up.setVisible(false);
+            }
+
+            if (getScrollPercentY() < 1f && !down.isVisible()) {
+                down.setVisible(true);
+            } else if (getScrollPercentY() == 1f && down.isVisible()) {
+                down.setVisible(false);
+            }
+        } else {
+            up.setVisible(false);
+            down.setVisible(false);
+        }
+    }
 
 	public void resize(int width, int height) {
 		setWidth(width);
-		setHeight(Math.min(panel.getHeight(), height / 2));
+		setHeight(Math.min(panel.getHeight(), height / 2f));
 
 		float size = DPIUtils.getPrefButtonSize() * .8f;
 		float margin = DPIUtils.getSpacing();
@@ -177,9 +215,9 @@ public class ChoicesUI extends ScrollPane {
 
 		up.remove();
 		down.remove();
-		
+
 		addAction(Actions.sequence(Actions.fadeOut(1f), Actions.run(new Runnable() {
-			
+
 			@Override
 			public void run() {
 				setVisible(false);
