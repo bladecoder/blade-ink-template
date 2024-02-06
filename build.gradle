@@ -7,7 +7,7 @@ buildscript {
     dependencies {
         classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
-    	classpath "com.android.tools.build:gradle:$androidPluginVersion"      
+    	classpath "com.android.tools.build:gradle:$androidPluginVersion"
     }
 }
 
@@ -50,7 +50,7 @@ configure(subprojects - project(':android')) {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(11)
+            languageVersion = JavaLanguageVersion.of(17)
         }
     }
 }
