@@ -13,6 +13,11 @@ jobs:
         with:
           distribution: corretto
           java-version: 17
+      - name: Generating debug keystore and SHA1 key
+        shell: powershell
+        run: |
+          keytool -genkey -keystore "%USERPROFILE%\.android\debug.keystore" -storepass android -alias android -keyalg RSA -keysize 4096 -validity 10000 -v
+          keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias android -storepass android -keypass android
       - name: Build with Gradle
         run: ./gradlew build
       - name: Pass tests and checks
