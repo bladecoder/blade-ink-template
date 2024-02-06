@@ -14,6 +14,6 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Build with Gradle
-        run: ./gradlew --debug --stacktrace build
+        run: ./gradlew build
       - name: Pass tests and checks
         run: ./gradlew check
