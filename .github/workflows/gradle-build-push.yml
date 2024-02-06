@@ -14,9 +14,7 @@ jobs:
           distribution: corretto
           java-version: 17
       - name: Generating debug keystore and SHA1 key
-        run: |
-          keytool -genkey -keystore "%USERPROFILE%\.android\debug.keystore" -storepass android -alias android -keyalg RSA -keysize 4096 -validity 10000 -v
-          keytool -list -v -keystore "%USERPROFILE%\.android\debug.keystore" -alias android -storepass android -keypass android
+        run:  keytool -genkey -v -keystore $HOME/.android/debug.keystore -storepass android -alias androiddebugkey -keypass android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Android Debug,O=Android,C=US"
       - name: Build with Gradle
         run: ./gradlew build
       - name: Pass tests and checks
