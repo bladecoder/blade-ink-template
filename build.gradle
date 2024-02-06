@@ -7,23 +7,23 @@ buildscript {
     dependencies {
       classpath "com.android.tools.build:gradle:$androidPluginVersion"
       classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        classpath ("com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"){
-          exclude group: 'org.bouncycastle'
-        }
+      classpath ("com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"){
+        exclude group: 'org.bouncycastle'
+      }
     }
 }
 
 allprojects {
     apply plugin: 'eclipse'
-//    apply plugin: 'idea'
-//
-//    // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
-//    idea {
-//        module {
-//            outputDir file('build/classes/java/main')
-//            testOutputDir file('build/classes/java/test')
-//        }
-//    }
+    apply plugin: 'idea'
+
+    // This allows you to "Build and run using IntelliJ IDEA", an option in IDEA's Settings.
+    idea {
+        module {
+            outputDir file('build/classes/java/main')
+            testOutputDir file('build/classes/java/test')
+        }
+    }
 }
 
 configure(subprojects - project(':android')) {
