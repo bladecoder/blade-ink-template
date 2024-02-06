@@ -5,8 +5,8 @@ buildscript {
         google()
     }
     dependencies {
-        classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-        classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
+        //classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
+        //classpath "com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"
     	classpath "com.android.tools.build:gradle:$androidPluginVersion"
     }
 }
