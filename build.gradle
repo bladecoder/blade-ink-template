@@ -7,9 +7,6 @@ buildscript {
     dependencies {
       classpath "com.android.tools.build:gradle:$androidPluginVersion"
       classpath "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
-      classpath ("com.mobidevelop.robovm:robovm-gradle-plugin:$robovmVersion"){
-        exclude group: 'org.bouncycastle'
-      }
     }
 }
 
