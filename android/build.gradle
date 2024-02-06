@@ -65,12 +65,6 @@ android {
       proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
     }
   }
-
-  java {
-    toolchain {
-      languageVersion = JavaLanguageVersion.of(11)
-    }
-  }
 }
 
 repositories {
