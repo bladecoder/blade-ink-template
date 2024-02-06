@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Adds some utilities to ensure that the JVM was started with the
@@ -65,7 +66,7 @@ public class StartupHelper {
      * @return whether a new JVM was started and thus no code should be executed
      *         in this one
      */
-    public static boolean startNewJvmIfRequired(boolean redirectOutput) {
+    public static boolean startNewJvmIfRequired(boolean redirectOutput, String[] args) {
         String osName = System.getProperty("os.name").toLowerCase();
         if (!osName.contains("mac")) {
             if (osName.contains("windows")) {
@@ -129,6 +130,7 @@ public class StartupHelper {
             }
         }
         jvmArgs.add(mainClass);
+        Collections.addAll(jvmArgs, args);
 
         try {
             if (!redirectOutput) {
@@ -173,7 +175,7 @@ public class StartupHelper {
      * @return whether a new JVM was started and thus no code should be executed
      *         in this one
      */
-    public static boolean startNewJvmIfRequired() {
-        return startNewJvmIfRequired(true);
+    public static boolean startNewJvmIfRequired(String[] args) {
+        return startNewJvmIfRequired(true, args);
     }
 }

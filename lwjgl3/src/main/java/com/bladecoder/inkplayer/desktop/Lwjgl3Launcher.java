@@ -9,7 +9,7 @@ public class Lwjgl3Launcher {
     private static boolean fullscreen = true;
 
     public static void main(String[] args) {
-        if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
+        if (StartupHelper.startNewJvmIfRequired(args)) return; // This handles macOS support and helps on Windows.
 
         InkApp app = new InkApp();
 
